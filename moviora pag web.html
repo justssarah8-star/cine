@@ -1,0 +1,1355 @@
+bash
+
+cat > /mnt/user-data/outputs/moviora-cines.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOVIORA CINES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --pink-bg:#FEE1E1;
+  --coral-light:#EA816B;
+  --brown-red:#AF4B35;
+  --coral-dark:#D75D46;
+  --pink-soft:#ECBFBC;
+  --red-logo:#E11919;
+  --dark-gray:#474649;
+  --petroleum-blue:#003A52;
+  --dark:#1A0A0A;
+  --dark-2:#220D0D;
+  --dark-3:#2E1010;
+  --dark-4:#3A1515;
+  --text:#FEF0EF;
+  --text-muted:#C09090;
+  --green:#4CAF7D;
+  --font:'Poppins',sans-serif;
+}
+*{scrollbar-width:thin;scrollbar-color:var(--coral-dark) var(--dark-2);}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--dark-2);}
+::-webkit-scrollbar-thumb{background:var(--coral-dark);border-radius:3px;}
+body{font-family:var(--font);background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden;}
+input::placeholder{color:rgba(255,255,255,0.2);}
+select option{background:var(--dark-3);color:var(--text);}
+.page{display:none;min-height:100vh;}
+.page.active{display:block;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(26,10,10,0.96);backdrop-filter:blur(24px);border-bottom:1px solid rgba(215,93,70,0.18);padding:0 2rem;}
+.nav-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:70px;}
+.nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none;}
+.logo-icon{width:44px;height:44px;background:var(--red-logo);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:#fff;letter-spacing:-1px;font-family:'Playfair Display',serif;}
+.logo-text{font-size:1.25rem;font-weight:700;letter-spacing:3px;color:var(--text);}
+.logo-text span{color:var(--coral-light);}
+.nav-links{display:flex;align-items:center;gap:0.1rem;}
+.nav-link{padding:0.45rem 0.9rem;font-size:0.8rem;font-weight:600;letter-spacing:0.8px;color:var(--text-muted);cursor:pointer;border-radius:6px;transition:all 0.2s;border:none;background:none;text-transform:uppercase;font-family:var(--font);}
+.nav-link:hover,.nav-link.active{color:var(--coral-light);background:rgba(234,129,107,0.1);}
+.nav-actions{display:flex;align-items:center;gap:0.7rem;}
+.btn-nav{padding:0.45rem 1.1rem;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:var(--font);letter-spacing:0.5px;}
+.btn-outline{border:1px solid rgba(215,93,70,0.45);background:transparent;color:var(--coral-light);}
+.btn-outline:hover{background:rgba(215,93,70,0.12);border-color:var(--coral-dark);}
+.btn-primary-nav{border:none;background:var(--red-logo);color:#fff;}
+.btn-primary-nav:hover{background:#C51515;}
+.cart-rel{position:relative;}
+.cart-badge{position:absolute;top:-7px;right:-7px;background:var(--petroleum-blue);color:#fff;border-radius:50%;width:18px;height:18px;font-size:0.62rem;font-weight:700;display:none;align-items:center;justify-content:center;}
+
+/* HERO */
+.hero{height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#1A0A0A 0%,#2E1010 40%,#003A52 100%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(215,93,70,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(215,93,70,0.05) 1px,transparent 1px);background-size:60px 60px;}
+.hero-glow-left{position:absolute;top:30%;left:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(225,25,25,0.12) 0%,transparent 70%);pointer-events:none;}
+.hero-glow-right{position:absolute;bottom:10%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,58,82,0.4) 0%,transparent 70%);pointer-events:none;}
+.hero-content{position:relative;text-align:center;max-width:900px;padding:2rem;animation:fadeUp 0.9s ease;}
+.hero-badge{display:inline-block;padding:0.35rem 1.4rem;border:1px solid rgba(236,191,188,0.35);border-radius:50px;font-size:0.72rem;font-weight:700;color:var(--pink-soft);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:1.8rem;background:rgba(236,191,188,0.06);}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,8vw,5.8rem);font-weight:900;line-height:1.05;margin-bottom:1.2rem;color:var(--text);}
+.hero-title .accent{color:var(--coral-light);}
+.hero-sub{font-size:1.05rem;color:var(--text-muted);max-width:480px;margin:0 auto 2.8rem;line-height:1.75;}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.btn-hero-main{padding:0.95rem 2.6rem;border:none;background:var(--red-logo);color:#fff;font-weight:700;font-size:0.95rem;border-radius:8px;cursor:pointer;font-family:var(--font);letter-spacing:0.5px;transition:all 0.25s;}
+.btn-hero-main:hover{background:#C51515;transform:translateY(-2px);}
+.btn-hero-sec{padding:0.95rem 2.6rem;border:1px solid rgba(236,191,188,0.25);background:rgba(236,191,188,0.04);color:var(--pink-soft);font-weight:600;font-size:0.95rem;border-radius:8px;cursor:pointer;font-family:var(--font);transition:all 0.25s;}
+.btn-hero-sec:hover{border-color:var(--coral-light);color:var(--coral-light);}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;animation:bounce 2s infinite;}
+.scroll-line{width:1px;height:36px;background:linear-gradient(to bottom,transparent,var(--coral-dark),transparent);}
+
+/* WELCOME BANNER */
+.welcome-banner{background:linear-gradient(135deg,rgba(215,93,70,0.12),rgba(254,225,225,0.04));border:1px solid rgba(215,93,70,0.25);border-radius:12px;padding:1.5rem 2rem;margin-bottom:2rem;display:none;align-items:center;justify-content:space-between;}
+.welcome-text{font-size:1.4rem;font-weight:800;letter-spacing:1px;}
+.welcome-text span{color:var(--coral-light);}
+.welcome-sub{font-size:0.85rem;color:var(--text-muted);margin-top:0.3rem;}
+.welcome-icon{width:52px;height:52px;background:var(--red-logo);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;font-size:22px;color:#fff;}
+
+/* QUICK ACCESS */
+.quick-inner{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;}
+.quick-card{display:flex;flex-direction:column;align-items:center;gap:0.6rem;padding:1.4rem 1rem;border-radius:10px;cursor:pointer;transition:all 0.22s;border:1px solid rgba(215,93,70,0.1);background:rgba(255,255,255,0.02);}
+.quick-card:hover{background:rgba(215,93,70,0.08);border-color:rgba(215,93,70,0.3);transform:translateY(-4px);}
+.quick-icon-box{width:40px;height:40px;border-radius:8px;background:rgba(215,93,70,0.15);display:flex;align-items:center;justify-content:center;}
+.quick-icon-svg{width:20px;height:20px;stroke:var(--coral-light);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.quick-label{font-size:0.75rem;font-weight:700;letter-spacing:0.8px;color:var(--text-muted);text-transform:uppercase;}
+
+/* SECTION */
+.section{padding:5rem 2rem;max-width:1440px;margin:0 auto;}
+.section-tag{display:inline-block;font-size:0.7rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--coral-light);margin-bottom:0.7rem;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;line-height:1.2;color:var(--text);}
+.section-sub{font-size:0.9rem;color:var(--text-muted);margin-top:0.5rem;}
+
+/* MOVIES */
+.movies-filter{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem;}
+.filter-btn{padding:0.4rem 1.1rem;border-radius:50px;font-size:0.78rem;font-weight:600;cursor:pointer;border:1px solid rgba(215,93,70,0.22);background:transparent;color:var(--text-muted);font-family:var(--font);transition:all 0.2s;}
+.filter-btn.active,.filter-btn:hover{background:var(--coral-dark);border-color:var(--coral-dark);color:#fff;}
+.movies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.5rem;}
+
+/* MOVIE CARD */
+.movie-card{border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.3s;background:var(--dark-3);border:1px solid rgba(215,93,70,0.08);position:relative;}
+.movie-card:hover{transform:translateY(-7px);border-color:rgba(215,93,70,0.4);box-shadow:0 24px 50px rgba(0,0,0,0.5);}
+.movie-poster{width:100%;aspect-ratio:2/3;display:block;object-fit:cover;}
+.movie-poster-bg{width:100%;aspect-ratio:2/3;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.movie-poster-title{position:absolute;bottom:0;left:0;right:0;padding:1.5rem 1rem 1rem;background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;line-height:1.25;color:#fff;}
+.movie-badge{position:absolute;top:10px;left:10px;padding:0.22rem 0.65rem;border-radius:4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;}
+.badge-hot{background:var(--red-logo);color:#fff;}
+.badge-new{background:var(--petroleum-blue);color:#fff;}
+.badge-soon{background:var(--brown-red);color:#fff;}
+.movie-info{padding:1rem;}
+.movie-title-card{font-size:0.9rem;font-weight:700;margin-bottom:0.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);}
+.movie-meta{font-size:0.76rem;color:var(--text-muted);display:flex;gap:0.7rem;align-items:center;flex-wrap:wrap;}
+.movie-rating{color:var(--coral-light);font-weight:700;}
+.movie-genre-tag{background:rgba(215,93,70,0.12);color:var(--coral-light);padding:0.18rem 0.55rem;border-radius:4px;font-size:0.68rem;font-weight:700;}
+.movie-actions{display:flex;gap:0.5rem;margin-top:0.8rem;}
+.btn-sm{flex:1;padding:0.5rem;border-radius:6px;font-size:0.76rem;font-weight:700;cursor:pointer;font-family:var(--font);transition:all 0.2s;letter-spacing:0.3px;}
+.btn-sm-primary{background:var(--red-logo);color:#fff;border:none;}
+.btn-sm-primary:hover{background:#C51515;}
+.btn-sm-outline{background:transparent;border:1px solid rgba(215,93,70,0.25);color:var(--text-muted);}
+.btn-sm-outline:hover{border-color:var(--coral-dark);color:var(--coral-light);}
+
+/* DULCERIA */
+.dulceria-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem;}
+.dulce-card{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.08);transition:all 0.28s;overflow:hidden;}
+.dulce-card:hover{transform:translateY(-4px);border-color:rgba(215,93,70,0.3);}
+.dulce-img-box{width:100%;height:150px;background:var(--dark-4);display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(215,93,70,0.08);}
+.dulce-img-label{font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);}
+.dulce-info{padding:1rem;}
+.dulce-name{font-weight:700;font-size:0.93rem;margin-bottom:0.3rem;color:var(--text);}
+.dulce-desc{font-size:0.77rem;color:var(--text-muted);line-height:1.5;margin-bottom:0.8rem;}
+.dulce-footer{display:flex;align-items:center;justify-content:space-between;}
+.dulce-price{font-size:1.1rem;font-weight:800;color:var(--coral-light);}
+.add-btn{width:34px;height:34px;border-radius:7px;border:none;background:var(--coral-dark);color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;transition:all 0.2s;font-family:var(--font);}
+.add-btn:hover{background:var(--red-logo);transform:scale(1.1);}
+
+/* LOCATIONS */
+.country-section{margin-bottom:3.5rem;}
+.country-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid rgba(215,93,70,0.12);}
+.country-flag{font-size:1.8rem;}
+.country-name{font-size:1.2rem;font-weight:800;letter-spacing:1px;color:var(--text);}
+.country-count{font-size:0.78rem;color:var(--text-muted);margin-left:auto;background:rgba(215,93,70,0.1);padding:0.25rem 0.7rem;border-radius:50px;}
+.branches-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+.branch-card{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.08);transition:all 0.28s;overflow:hidden;}
+.branch-card:hover{transform:translateY(-4px);border-color:rgba(215,93,70,0.3);}
+.branch-header{padding:1.2rem 1.4rem 0.8rem;background:linear-gradient(135deg,rgba(215,93,70,0.1),rgba(0,58,82,0.15));border-bottom:1px solid rgba(215,93,70,0.1);}
+.branch-city{font-size:1.1rem;font-weight:800;color:var(--coral-light);margin-bottom:0.2rem;}
+.branch-salas{font-size:0.75rem;color:var(--text-muted);font-weight:600;}
+.branch-body{padding:1rem 1.4rem;}
+.branch-detail{display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.5rem;font-size:0.81rem;color:var(--text-muted);}
+.branch-detail-label{font-weight:700;color:var(--pink-soft);min-width:60px;flex-shrink:0;}
+.branch-actions{display:flex;gap:0.5rem;padding:0.8rem 1.4rem 1.2rem;}
+
+/* PROMOS */
+.promos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;}
+.promo-card{background:var(--dark-3);border-radius:12px;padding:1.8rem;border:1px solid rgba(215,93,70,0.08);transition:all 0.28s;position:relative;overflow:hidden;}
+.promo-card:hover{transform:translateY(-5px);border-color:rgba(215,93,70,0.3);}
+.promo-accent{position:absolute;top:0;left:0;width:4px;height:100%;background:var(--coral-dark);}
+.promo-tag{display:inline-block;padding:0.22rem 0.75rem;border-radius:4px;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;}
+.promo-tag-a{background:rgba(215,93,70,0.15);color:var(--coral-light);}
+.promo-tag-b{background:rgba(0,58,82,0.35);color:#7EC8E3;}
+.promo-tag-c{background:rgba(175,75,53,0.2);color:var(--pink-soft);}
+.promo-title{font-size:1.15rem;font-weight:800;margin-bottom:0.5rem;color:var(--text);}
+.promo-desc{font-size:0.83rem;color:var(--text-muted);line-height:1.65;margin-bottom:1.1rem;}
+.promo-code-row{display:flex;align-items:center;gap:0.5rem;background:rgba(215,93,70,0.06);border:1px dashed rgba(215,93,70,0.3);border-radius:7px;padding:0.55rem 0.9rem;}
+.promo-code-val{font-weight:800;color:var(--coral-light);letter-spacing:2px;flex:1;font-size:0.85rem;}
+.copy-btn{background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:0.75rem;font-family:var(--font);padding:0.2rem 0.5rem;border-radius:4px;transition:all 0.2s;font-weight:600;}
+.copy-btn:hover{color:var(--coral-light);}
+
+/* CARRITO */
+.cart-layout{display:grid;grid-template-columns:1fr 370px;gap:2rem;align-items:start;}
+.cart-items-box{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.08);overflow:hidden;}
+.cart-item{display:flex;gap:1rem;padding:1.2rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.04);}
+.cart-item:last-child{border-bottom:none;}
+.cart-item-poster{width:58px;height:84px;border-radius:7px;background:var(--dark-4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:var(--text-muted);text-align:center;letter-spacing:1px;text-transform:uppercase;padding:4px;border:1px solid rgba(215,93,70,0.1);}
+.cart-item-info{flex:1;}
+.cart-item-title{font-weight:700;margin-bottom:0.25rem;font-size:0.9rem;}
+.cart-item-sub{font-size:0.78rem;color:var(--text-muted);}
+.cart-item-price{font-weight:800;color:var(--coral-light);margin-top:0.4rem;font-size:0.9rem;}
+.remove-btn{background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:1rem;padding:0.3rem;border-radius:4px;transition:color 0.2s;align-self:flex-start;}
+.remove-btn:hover{color:var(--red-logo);}
+.cart-summary-box{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.08);padding:1.6rem;position:sticky;top:90px;}
+.summary-title{font-size:1rem;font-weight:800;margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.06);letter-spacing:0.5px;}
+.summary-row{display:flex;justify-content:space-between;font-size:0.85rem;color:var(--text-muted);margin-bottom:0.65rem;}
+.summary-total{display:flex;justify-content:space-between;font-weight:800;font-size:1.1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06);margin-top:0.5rem;}
+.summary-total span:last-child{color:var(--coral-light);}
+
+/* PAGO */
+.payment-layout{display:grid;grid-template-columns:1fr 360px;gap:2rem;align-items:start;}
+.payment-form-box{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.08);padding:2rem;}
+.pay-methods{display:flex;gap:0.8rem;margin-bottom:2rem;}
+.pay-method{flex:1;padding:0.9rem 0.5rem;border-radius:8px;border:1px solid rgba(215,93,70,0.15);cursor:pointer;text-align:center;font-size:0.78rem;font-weight:700;color:var(--text-muted);transition:all 0.2s;letter-spacing:0.5px;text-transform:uppercase;}
+.pay-method.active{border-color:var(--coral-dark);color:var(--coral-light);background:rgba(215,93,70,0.07);}
+.pay-method-label{display:block;font-size:0.68rem;margin-top:0.3rem;}
+.form-group{margin-bottom:1.2rem;}
+.form-label{display:block;font-size:0.72rem;font-weight:700;color:var(--text-muted);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.8px;}
+.form-input{width:100%;background:var(--dark-4);border:1px solid rgba(215,93,70,0.15);border-radius:8px;padding:0.75rem 1rem;color:var(--text);font-family:var(--font);font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--coral-dark);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-select{width:100%;background:var(--dark-4);border:1px solid rgba(215,93,70,0.15);border-radius:8px;padding:0.75rem 1rem;color:var(--text);font-family:var(--font);font-size:0.88rem;outline:none;cursor:pointer;}
+.btn-full{width:100%;padding:0.9rem;border:none;background:var(--red-logo);color:#fff;font-weight:700;font-size:0.95rem;border-radius:8px;cursor:pointer;font-family:var(--font);letter-spacing:0.5px;transition:all 0.2s;margin-top:0.8rem;}
+.btn-full:hover{background:#C51515;}
+.btn-full-outline{width:100%;padding:0.9rem;border:1px solid rgba(215,93,70,0.25);background:transparent;color:var(--text-muted);font-weight:600;font-size:0.88rem;border-radius:8px;cursor:pointer;font-family:var(--font);transition:all 0.2s;margin-top:0.5rem;}
+.btn-full-outline:hover{border-color:var(--coral-dark);color:var(--coral-light);}
+
+/* COMPRAS */
+.purchases-list{display:flex;flex-direction:column;gap:1rem;}
+.purchase-card{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.08);padding:1.5rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.5rem;align-items:center;}
+.purchase-poster{width:54px;height:78px;background:var(--dark-4);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:700;color:var(--text-muted);text-align:center;padding:4px;letter-spacing:0.5px;text-transform:uppercase;border:1px solid rgba(215,93,70,0.1);}
+.purchase-title{font-weight:700;margin-bottom:0.3rem;font-size:0.92rem;}
+.purchase-sub{font-size:0.79rem;color:var(--text-muted);}
+.status-badge{display:inline-block;padding:0.28rem 0.75rem;border-radius:50px;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.status-confirmed{background:rgba(76,175,125,0.15);color:#6FD0A4;}
+.purchase-price{font-size:1.15rem;font-weight:800;color:var(--coral-light);margin-top:0.3rem;}
+
+/* LOGIN */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:var(--dark);position:relative;}
+.login-bg-grad{position:fixed;inset:0;background:linear-gradient(160deg,#1A0A0A 0%,#2E1010 50%,#003A52 100%);z-index:0;}
+.login-glow{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(215,93,70,0.09) 0%,transparent 70%);pointer-events:none;z-index:0;}
+.login-card{position:relative;z-index:1;background:var(--dark-2);border:1px solid rgba(215,93,70,0.18);border-radius:16px;padding:2.8rem;width:100%;max-width:460px;animation:fadeUp 0.5s ease;}
+.login-logo-wrap{text-align:center;margin-bottom:2rem;}
+.login-logo-icon{width:54px;height:54px;background:var(--red-logo);border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#fff;margin:0 auto 0.8rem;font-family:'Playfair Display',serif;}
+.login-logo-name{font-size:1.35rem;font-weight:700;letter-spacing:3px;color:var(--text);}
+.login-logo-name span{color:var(--coral-light);}
+.login-logo-sub{font-size:0.8rem;color:var(--text-muted);margin-top:0.3rem;}
+.tab-switcher{display:flex;background:var(--dark-3);border-radius:8px;padding:4px;margin-bottom:2rem;}
+.tab-btn{flex:1;padding:0.55rem;border-radius:6px;border:none;background:transparent;color:var(--text-muted);font-family:var(--font);font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
+.tab-btn.active{background:var(--coral-dark);color:#fff;}
+.login-title{font-size:1.4rem;font-weight:800;margin-bottom:0.3rem;}
+.login-desc{font-size:0.85rem;color:var(--text-muted);margin-bottom:1.8rem;}
+.forgot{font-size:0.78rem;color:var(--text-muted);cursor:pointer;}
+.forgot:hover{color:var(--coral-light);}
+.login-divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;}
+.divider-line{flex:1;height:1px;background:rgba(255,255,255,0.07);}
+.divider-text{font-size:0.75rem;color:var(--text-muted);}
+.social-btns{display:flex;gap:0.8rem;}
+.social-btn{flex:1;padding:0.65rem;border:1px solid rgba(215,93,70,0.18);border-radius:8px;background:transparent;color:var(--text-muted);font-family:var(--font);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.social-btn:hover{border-color:rgba(215,93,70,0.4);color:var(--text);}
+.role-select{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:1.4rem;}
+.role-option{padding:0.8rem 0.5rem;border:1px solid rgba(215,93,70,0.15);border-radius:8px;cursor:pointer;text-align:center;font-size:0.78rem;font-weight:700;color:var(--text-muted);transition:all 0.2s;letter-spacing:0.3px;}
+.role-option.active,.role-option:hover{border-color:var(--coral-dark);color:var(--coral-light);background:rgba(215,93,70,0.07);}
+.role-label{display:block;font-size:0.72rem;margin-top:0.2rem;}
+
+/* PANEL EMPLEADOS */
+.emp-layout{display:grid;grid-template-columns:250px 1fr;min-height:100vh;}
+.emp-sidebar{background:var(--dark-2);border-right:1px solid rgba(215,93,70,0.1);position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.5rem 0;display:flex;flex-direction:column;}
+.emp-sidebar-logo{padding:0 1.4rem 1.4rem;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:1rem;}
+.emp-nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.4rem;cursor:pointer;transition:all 0.2s;font-size:0.82rem;font-weight:600;color:var(--text-muted);letter-spacing:0.3px;}
+.emp-nav-item:hover,.emp-nav-item.active{color:var(--coral-light);background:rgba(215,93,70,0.08);}
+.emp-nav-item.active{border-right:2px solid var(--coral-dark);}
+.emp-nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(215,93,70,0.3);flex-shrink:0;}
+.emp-nav-item.active .emp-nav-dot{background:var(--coral-dark);}
+.emp-nav-section{padding:0.5rem 1.4rem 0.3rem;font-size:0.62rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.18);margin-top:0.5rem;}
+.emp-content{background:var(--dark);padding:2rem;}
+.emp-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;}
+.emp-title{font-size:1.5rem;font-weight:800;color:var(--text);}
+.emp-subtitle{font-size:0.82rem;color:var(--text-muted);margin-top:0.2rem;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;margin-bottom:2rem;}
+.stat-card{background:var(--dark-2);border-radius:10px;padding:1.3rem;border:1px solid rgba(215,93,70,0.08);}
+.stat-label{font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.5rem;}
+.stat-value{font-size:1.9rem;font-weight:800;color:var(--coral-light);}
+.stat-change{font-size:0.75rem;color:var(--green);margin-top:0.2rem;font-weight:600;}
+.table-wrap{background:var(--dark-2);border-radius:10px;border:1px solid rgba(215,93,70,0.08);overflow:hidden;}
+.table-header{padding:1.1rem 1.5rem;border-bottom:1px solid rgba(215,93,70,0.08);display:flex;align-items:center;justify-content:space-between;}
+.table-title{font-weight:800;font-size:0.9rem;letter-spacing:0.3px;}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;padding:0.75rem 1.5rem;font-size:0.68rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid rgba(215,93,70,0.06);}
+td{padding:0.9rem 1.5rem;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.03);color:var(--text);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(215,93,70,0.03);}
+.hall-status{display:inline-block;padding:0.22rem 0.65rem;border-radius:50px;font-size:0.68rem;font-weight:700;}
+.hall-available{background:rgba(76,175,125,0.12);color:#6FD0A4;}
+.hall-full{background:rgba(225,25,25,0.12);color:#F87171;}
+.hall-almost{background:rgba(215,93,70,0.12);color:var(--coral-light);}
+.progress-bar{height:5px;border-radius:3px;background:rgba(255,255,255,0.06);overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;}
+
+/* SEAT MAP */
+.seat-legend{display:flex;gap:1.4rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:0.5rem;font-size:0.76rem;color:var(--text-muted);}
+.seat-dot{width:13px;height:13px;border-radius:2px;}
+.seat-dot-free{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);}
+.seat-dot-taken{background:#333;border:1px solid #2a2a2a;}
+.seat-dot-selected{background:var(--coral-dark);border:1px solid var(--brown-red);}
+.screen{width:75%;margin:0 auto 2rem;text-align:center;background:linear-gradient(to bottom,rgba(215,93,70,0.18),transparent);padding:0.45rem;border-radius:4px 4px 0 0;font-size:0.7rem;color:var(--coral-light);letter-spacing:3px;font-weight:700;}
+.seats-container{display:flex;flex-direction:column;gap:6px;align-items:center;}
+.seat-row{display:flex;align-items:center;gap:5px;}
+.row-label{width:18px;text-align:center;font-size:0.65rem;color:var(--text-muted);font-weight:600;}
+.seat{width:26px;height:22px;border-radius:3px 3px 0 0;cursor:pointer;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);transition:all 0.14s;}
+.seat.taken{background:#232323;border-color:#2a2a2a;cursor:not-allowed;}
+.seat.selected{background:var(--coral-dark);border-color:var(--brown-red);}
+.seat:hover:not(.taken){background:rgba(215,93,70,0.35);border-color:var(--coral-dark);}
+.seat-gap{width:14px;}
+
+/* SPOTY */
+.spoty-btn{position:fixed;bottom:2rem;right:2rem;z-index:999;width:58px;height:58px;border-radius:50%;background:var(--petroleum-blue);border:2px solid rgba(0,58,82,0.8);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,58,82,0.5);transition:all 0.3s;}
+.spoty-btn:hover{transform:scale(1.1);box-shadow:0 12px 40px rgba(0,58,82,0.7);}
+.spoty-btn-inner{width:24px;height:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+.spoty-dot{width:6px;height:6px;border-radius:50%;background:var(--pink-soft);}
+.spoty-dots-row{display:flex;gap:3px;}
+.spoty-panel{position:fixed;bottom:5.5rem;right:2rem;z-index:998;width:350px;background:var(--dark-2);border:1px solid rgba(0,58,82,0.5);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.7);display:none;flex-direction:column;overflow:hidden;max-height:500px;}
+.spoty-panel.open{display:flex;}
+.spoty-header{padding:0.9rem 1.2rem;background:var(--petroleum-blue);display:flex;align-items:center;gap:0.8rem;}
+.spoty-avatar{width:36px;height:36px;border-radius:50%;background:var(--pink-soft);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:var(--petroleum-blue);}
+.spoty-name{font-weight:800;font-size:0.9rem;color:#fff;}
+.spoty-status{font-size:0.7rem;color:var(--pink-soft);}
+.close-spoty{margin-left:auto;background:transparent;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:1.1rem;font-family:var(--font);padding:0.2rem 0.4rem;border-radius:4px;}
+.close-spoty:hover{color:#fff;}
+.spoty-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.75rem;}
+.spoty-msg{max-width:86%;padding:0.65rem 0.9rem;border-radius:10px;font-size:0.8rem;line-height:1.5;}
+.spoty-msg.bot{background:var(--dark-3);border-radius:4px 10px 10px 10px;color:var(--text);}
+.spoty-msg.user{background:rgba(0,58,82,0.5);border:1px solid rgba(0,58,82,0.7);border-radius:10px 4px 10px 10px;align-self:flex-end;color:var(--text);}
+.spoty-chips{display:flex;flex-wrap:wrap;gap:0.4rem;padding:0 0.8rem 0.5rem;}
+.spoty-chip{padding:0.3rem 0.75rem;border-radius:50px;border:1px solid rgba(0,58,82,0.5);background:rgba(0,58,82,0.2);color:var(--pink-soft);font-size:0.72rem;cursor:pointer;font-family:var(--font);font-weight:600;transition:all 0.2s;}
+.spoty-chip:hover{background:var(--petroleum-blue);color:#fff;}
+.spoty-input{display:flex;gap:0.5rem;padding:0.75rem 0.9rem;border-top:1px solid rgba(255,255,255,0.05);}
+.spoty-input input{flex:1;background:var(--dark-3);border:1px solid rgba(0,58,82,0.4);border-radius:7px;padding:0.48rem 0.8rem;color:var(--text);font-family:var(--font);font-size:0.8rem;outline:none;}
+.spoty-input input:focus{border-color:var(--petroleum-blue);}
+.spoty-send{width:32px;height:32px;border-radius:7px;border:none;background:var(--petroleum-blue);color:#fff;cursor:pointer;font-family:var(--font);font-weight:700;font-size:0.9rem;display:flex;align-items:center;justify-content:center;}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(5px);}
+.modal{background:var(--dark-2);border:1px solid rgba(215,93,70,0.2);border-radius:16px;width:100%;max-width:620px;max-height:90vh;overflow-y:auto;animation:fadeUp 0.3s ease;}
+.modal-header{padding:1.4rem 1.6rem;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:1.1rem;font-weight:800;color:var(--text);}
+.close-modal{background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:1.4rem;line-height:1;font-family:var(--font);}
+.close-modal:hover{color:var(--text);}
+.modal-body{padding:1.6rem;}
+
+/* TICKET */
+.ticket{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.25);overflow:hidden;}
+.ticket-top{background:linear-gradient(135deg,rgba(215,93,70,0.15),rgba(0,58,82,0.2));padding:1.5rem;display:flex;align-items:flex-start;justify-content:space-between;}
+.ticket-movie-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--text);}
+.ticket-cinema-name{font-size:0.78rem;color:var(--coral-light);margin-top:0.3rem;font-weight:600;}
+.ticket-id{font-size:0.72rem;color:var(--text-muted);text-align:right;}
+.ticket-divider{border:none;border-top:2px dashed rgba(215,93,70,0.2);}
+.ticket-body{padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.ticket-field label{font-size:0.65rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);display:block;margin-bottom:0.2rem;font-weight:700;}
+.ticket-field span{font-size:0.92rem;font-weight:700;color:var(--text);}
+.ticket-barcode{padding:1rem 1.5rem;text-align:center;border-top:2px dashed rgba(215,93,70,0.2);}
+.barcode-lines{display:flex;gap:2px;justify-content:center;margin-bottom:0.5rem;}
+.barcode-line{width:2px;background:var(--text);opacity:0.7;}
+.barcode-line.wide{width:4px;}
+.barcode-num{font-size:0.7rem;color:var(--text-muted);letter-spacing:4px;}
+
+/* NOTIF */
+.notification{position:fixed;top:90px;right:1.5rem;z-index:3000;background:var(--dark-2);border:1px solid rgba(215,93,70,0.35);border-radius:10px;padding:0.9rem 1.2rem;min-width:270px;animation:slideIn 0.3s ease;box-shadow:0 8px 30px rgba(0,0,0,0.5);border-left:3px solid var(--coral-dark);}
+.notif-text{font-weight:600;font-size:0.85rem;color:var(--text);}
+
+/* FOOTER */
+footer{background:var(--dark-2);border-top:1px solid rgba(215,93,70,0.1);padding:3rem 2rem 1.5rem;}
+.footer-inner{max-width:1440px;margin:0 auto;}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2.5rem;}
+.footer-brand p{font-size:0.82rem;color:var(--text-muted);line-height:1.75;margin-top:0.8rem;max-width:260px;}
+.footer-col h4{font-weight:800;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:1rem;text-transform:uppercase;color:var(--pink-soft);}
+.footer-col a{display:block;font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem;cursor:pointer;transition:color 0.2s;text-decoration:none;}
+.footer-col a:hover{color:var(--coral-light);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.05);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:0.75rem;color:var(--text-muted);}
+.footer-social{display:flex;gap:0.7rem;}
+.social-icon{width:34px;height:34px;border-radius:7px;border:1px solid rgba(215,93,70,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;color:var(--text-muted);font-size:0.72rem;font-weight:700;letter-spacing:0.5px;}
+.social-icon:hover{border-color:var(--coral-dark);color:var(--coral-light);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideIn{from{opacity:0;transform:translateX(22px);}to{opacity:1;transform:translateX(0);}}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(7px);}}
+@media(max-width:900px){.cart-layout,.payment-layout{grid-template-columns:1fr;}.emp-layout{grid-template-columns:1fr;}.emp-sidebar{position:relative;height:auto;}.footer-top{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.footer-top{grid-template-columns:1fr;}.hero-btns{flex-direction:column;align-items:center;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="showPage('home')">
+      <div class="logo-icon">M</div>
+      <span class="logo-text">MOVIORA <span>CINES</span></span>
+    </a>
+    <div class="nav-links">
+      <button class="nav-link active" onclick="showPage('home',this)">Inicio</button>
+      <button class="nav-link" onclick="showPage('cartelera',this)">Cartelera</button>
+      <button class="nav-link" onclick="showPage('dulceria',this)">Dulceria</button>
+      <button class="nav-link" onclick="showPage('promociones',this)">Promociones</button>
+      <button class="nav-link" onclick="showPage('locations',this)">Locations</button>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-nav btn-outline cart-rel" onclick="showPage('carrito')">
+        Carrito
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+      <button class="btn-nav btn-outline" onclick="showPage('login')">Ingresar</button>
+      <button class="btn-nav btn-primary-nav" onclick="showPage('login')">Registro</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-glow-left"></div>
+    <div class="hero-glow-right"></div>
+    <div class="hero-content">
+      <div class="hero-badge">Experiencia Cinematografica Premium</div>
+      <h1 class="hero-title">VIVE EL CINE<br><span class="accent">COMO NUNCA</span></h1>
+      <p class="hero-sub">La cadena de cines mas moderna del mundo. Tecnologia de punta, comodidad sin igual y las mejores peliculas del momento.</p>
+      <div class="hero-btns">
+        <button class="btn-hero-main" onclick="showPage('cartelera')">Ver Cartelera</button>
+        <button class="btn-hero-sec" onclick="showPage('locations')">Nuestras Sucursales</button>
+      </div>
+    </div>
+    <div class="hero-scroll"><div class="scroll-line"></div>SCROLL</div>
+  </div>
+
+  <div style="background:var(--dark-2);padding:3rem 2rem;border-top:1px solid rgba(215,93,70,0.1);border-bottom:1px solid rgba(215,93,70,0.1);">
+    <div style="max-width:1440px;margin:0 auto;">
+      <div class="welcome-banner" id="welcomeBanner">
+        <div>
+          <div class="welcome-text">BIENVENIDO A <span>MOVIORA CINES</span></div>
+          <div class="welcome-sub" id="welcomeUserName">Es un placer tenerte de vuelta</div>
+        </div>
+        <div class="welcome-icon">M</div>
+      </div>
+      <div class="quick-inner">
+        <div class="quick-card" onclick="showPage('cartelera')">
+          <div class="quick-icon-box"><svg class="quick-icon-svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="16 2 12 7 8 2"/></svg></div>
+          <span class="quick-label">Cartelera</span>
+        </div>
+        <div class="quick-card" onclick="showPage('dulceria')">
+          <div class="quick-icon-box"><svg class="quick-icon-svg" viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></div>
+          <span class="quick-label">Dulceria</span>
+        </div>
+        <div class="quick-card" onclick="showPage('carrito')">
+          <div class="quick-icon-box"><svg class="quick-icon-svg" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+          <span class="quick-label">Carrito</span>
+        </div>
+        <div class="quick-card" onclick="showPage('compras')">
+          <div class="quick-icon-box"><svg class="quick-icon-svg" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+          <span class="quick-label">Mis Compras</span>
+        </div>
+        <div class="quick-card" onclick="showPage('locations')">
+          <div class="quick-icon-box"><svg class="quick-icon-svg" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <span class="quick-label">Locations</span>
+        </div>
+        <div class="quick-card" onclick="showPage('promociones')">
+          <div class="quick-icon-box"><svg class="quick-icon-svg" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+          <span class="quick-label">Promociones</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" style="margin-bottom:2.5rem;">
+      <div class="section-tag">En cartelera ahora</div>
+      <h2 class="section-title">Peliculas Destacadas</h2>
+      <p class="section-sub">Las mejores peliculas de la temporada disponibles en MOVIORA CINES</p>
+    </div>
+    <div class="movies-grid" id="homeMovies"></div>
+    <div style="text-align:center;margin-top:2.5rem;">
+      <button class="btn-hero-sec" onclick="showPage('cartelera')">Ver toda la cartelera</button>
+    </div>
+  </div>
+
+  <div style="background:var(--dark-2);padding:4rem 2rem;border-top:1px solid rgba(215,93,70,0.1);">
+    <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:2rem;text-align:center;">
+      <div><div style="font-size:2.6rem;font-weight:900;color:var(--coral-light);font-family:'Playfair Display',serif;">25+</div><div style="color:var(--text-muted);font-size:0.85rem;margin-top:0.3rem;">Sucursales Globales</div></div>
+      <div><div style="font-size:2.6rem;font-weight:900;color:var(--coral-light);font-family:'Playfair Display',serif;">500K+</div><div style="color:var(--text-muted);font-size:0.85rem;margin-top:0.3rem;">Clientes Satisfechos</div></div>
+      <div><div style="font-size:2.6rem;font-weight:900;color:var(--coral-light);font-family:'Playfair Display',serif;">150+</div><div style="color:var(--text-muted);font-size:0.85rem;margin-top:0.3rem;">Peliculas al Mes</div></div>
+      <div><div style="font-size:2.6rem;font-weight:900;color:var(--coral-light);font-family:'Playfair Display',serif;">12</div><div style="color:var(--text-muted);font-size:0.85rem;margin-top:0.3rem;">Paises Presentes</div></div>
+    </div>
+  </div>
+  <div id="mainFooter"></div>
+</div>
+
+<!-- CARTELERA -->
+<div id="page-cartelera" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;">
+        <div class="section-tag">Programacion</div>
+        <h1 class="section-title" style="margin-top:0.3rem;">Cartelera</h1>
+        <p class="section-sub" style="margin-top:0.5rem;">Selecciona tu pelicula, elige tus asientos y disfruta</p>
+      </div>
+    </div>
+    <div class="section">
+      <div class="movies-filter">
+        <button class="filter-btn active" onclick="filterMovies('all',this)">Todas</button>
+        <button class="filter-btn" onclick="filterMovies('comedia',this)">Comedia</button>
+        <button class="filter-btn" onclick="filterMovies('terror',this)">Terror</button>
+        <button class="filter-btn" onclick="filterMovies('accion',this)">Accion</button>
+        <button class="filter-btn" onclick="filterMovies('animacion',this)">Animacion</button>
+        <button class="filter-btn" onclick="filterMovies('drama',this)">Drama</button>
+      </div>
+      <div class="movies-grid" id="cartelera-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DULCERIA -->
+<div id="page-dulceria" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;">
+        <div class="section-tag">Snacks y Bebidas</div>
+        <h1 class="section-title" style="margin-top:0.3rem;">Dulceria</h1>
+        <p class="section-sub" style="margin-top:0.5rem;">Haz tu experiencia cinematografica mas deliciosa</p>
+      </div>
+    </div>
+    <div class="section"><div class="dulceria-grid" id="dulceria-grid"></div></div>
+  </div>
+</div>
+
+<!-- LOCATIONS -->
+<div id="page-locations" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;">
+        <div class="section-tag">Presencia Mundial</div>
+        <h1 class="section-title" style="margin-top:0.3rem;">Nuestras Sucursales</h1>
+        <p class="section-sub" style="margin-top:0.5rem;">Mas de 25 sucursales en 12 paises alrededor del mundo</p>
+      </div>
+    </div>
+    <div class="section" id="locations-content"></div>
+  </div>
+</div>
+
+<!-- PROMOCIONES -->
+<div id="page-promociones" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;">
+        <div class="section-tag">Ofertas Especiales</div>
+        <h1 class="section-title" style="margin-top:0.3rem;">Promociones</h1>
+        <p class="section-sub" style="margin-top:0.5rem;">Aprovecha nuestros mejores descuentos y beneficios exclusivos</p>
+      </div>
+    </div>
+    <div class="section"><div class="promos-grid" id="promos-grid"></div></div>
+  </div>
+</div>
+
+<!-- CARRITO -->
+<div id="page-carrito" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;"><div class="section-tag">Mi Seleccion</div><h1 class="section-title" style="margin-top:0.3rem;">Carrito de Compras</h1></div>
+    </div>
+    <div class="section">
+      <div class="cart-layout">
+        <div>
+          <div class="cart-items-box" id="cart-items-container">
+            <div style="padding:3rem;text-align:center;color:var(--text-muted);">
+              <div style="font-size:0.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem;color:rgba(215,93,70,0.4);">CARRITO VACIO</div>
+              <p style="font-size:0.9rem;">No tienes items en tu carrito todavia</p>
+              <button class="btn-full" style="max-width:200px;margin:1.2rem auto 0;" onclick="showPage('cartelera')">Ver Cartelera</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="cart-summary-box">
+            <div class="summary-title">Resumen de Orden</div>
+            <div class="summary-row"><span>Boletos</span><span id="summaryTickets">$0.00</span></div>
+            <div class="summary-row"><span>Dulceria</span><span id="summarySnacks">$0.00</span></div>
+            <div class="summary-row"><span>Cargo de servicio</span><span>$2.00</span></div>
+            <div class="summary-total"><span>Total</span><span id="cartTotal">$2.00</span></div>
+            <button class="btn-full" onclick="showPage('pago')">Proceder al Pago</button>
+            <button class="btn-full-outline" onclick="showPage('cartelera')">Seguir comprando</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGO -->
+<div id="page-pago" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;"><div class="section-tag">Finalizar Compra</div><h1 class="section-title" style="margin-top:0.3rem;">Metodo de Pago</h1></div>
+    </div>
+    <div class="section">
+      <div class="payment-layout">
+        <div>
+          <div class="payment-form-box">
+            <h3 style="font-weight:800;margin-bottom:1.5rem;font-size:1rem;letter-spacing:0.5px;">Selecciona tu metodo de pago</h3>
+            <div class="pay-methods">
+              <div class="pay-method active" onclick="setPayMethod('credito',this)">
+                <span style="display:block;font-size:1.1rem;margin-bottom:0.3rem;font-weight:800;">CREDITO</span>
+                <span class="pay-method-label">Tarjeta de credito</span>
+              </div>
+              <div class="pay-method" onclick="setPayMethod('debito',this)">
+                <span style="display:block;font-size:1.1rem;margin-bottom:0.3rem;font-weight:800;">DEBITO</span>
+                <span class="pay-method-label">Tarjeta de debito</span>
+              </div>
+              <div class="pay-method" onclick="setPayMethod('transferencia',this)">
+                <span style="display:block;font-size:1.1rem;margin-bottom:0.3rem;font-weight:800;">TRANSFERENCIA</span>
+                <span class="pay-method-label">Bancaria</span>
+              </div>
+            </div>
+            <div id="payFormCard">
+              <div class="form-group"><label class="form-label">Nombre del titular</label><input type="text" class="form-input" placeholder="Como aparece en la tarjeta"></div>
+              <div class="form-group"><label class="form-label">Numero de tarjeta</label><input type="text" class="form-input" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCard(this)"></div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Vencimiento</label><input type="text" class="form-input" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)"></div>
+                <div class="form-group"><label class="form-label">CVV</label><input type="text" class="form-input" placeholder="000" maxlength="4"></div>
+              </div>
+            </div>
+            <div id="payFormTransfer" style="display:none;">
+              <div class="form-group"><label class="form-label">Banco emisor</label><select class="form-select"><option>Seleccionar banco</option><option>Banco Popular Dominicano</option><option>BHD Leon</option><option>Banreservas</option><option>Scotiabank</option><option>Banco Santa Cruz</option><option>Citibank</option></select></div>
+              <div class="form-group"><label class="form-label">Numero de referencia</label><input type="text" class="form-input" placeholder="Numero de referencia de la transferencia"></div>
+              <div class="form-group"><label class="form-label">Nombre del titular</label><input type="text" class="form-input" placeholder="Nombre completo"></div>
+              <div class="form-group"><label class="form-label">Fecha de transferencia</label><input type="date" class="form-input"></div>
+            </div>
+            <button class="btn-full" onclick="processPay()">Confirmar Pago</button>
+            <div style="margin-top:1rem;padding:0.8rem;background:rgba(76,175,125,0.07);border:1px solid rgba(76,175,125,0.2);border-radius:8px;font-size:0.77rem;color:#6FD0A4;font-weight:600;">Tus datos estan protegidos con cifrado de 256 bits SSL</div>
+          </div>
+        </div>
+        <div>
+          <div class="cart-summary-box">
+            <div class="summary-title">Resumen de Orden</div>
+            <div class="summary-row"><span>El Diablo Viste a la Moda 2</span><span>$12.00</span></div>
+            <div class="summary-row"><span>Asientos C5, C6</span><span></span></div>
+            <div class="summary-row"><span>Palomitas grandes x2</span><span>$9.00</span></div>
+            <div class="summary-row"><span>Cargo de servicio</span><span>$2.00</span></div>
+            <div class="summary-total"><span>Total</span><span>$23.00</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MIS COMPRAS -->
+<div id="page-compras" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;"><div class="section-tag">Historial</div><h1 class="section-title" style="margin-top:0.3rem;">Mis Compras</h1></div>
+    </div>
+    <div class="section"><div class="purchases-list" id="purchases-list"></div></div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="page-login" class="page">
+  <div class="login-page">
+    <div class="login-bg-grad"></div>
+    <div class="login-glow"></div>
+    <div class="login-card">
+      <div class="login-logo-wrap">
+        <div class="login-logo-icon">M</div>
+        <div class="login-logo-name">MOVIORA <span>CINES</span></div>
+        <div class="login-logo-sub">Tu destino cinematografico premium</div>
+      </div>
+      <div class="tab-switcher">
+        <button class="tab-btn active" onclick="switchLoginTab('cliente',this)">Cliente</button>
+        <button class="tab-btn" onclick="switchLoginTab('empleado',this)">Empleado</button>
+      </div>
+      <div id="loginCliente">
+        <h2 class="login-title">Bienvenido</h2>
+        <p class="login-desc">Inicia sesion para acceder a tu cuenta</p>
+        <div class="form-group"><label class="form-label">Correo electronico</label><input type="email" class="form-input" placeholder="tu@correo.com" id="loginEmail"></div>
+        <div class="form-group"><label class="form-label">Contrasena</label><input type="password" class="form-input" placeholder="••••••••" id="loginPass"></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:1.2rem;"><span class="forgot">Olvide mi contrasena</span></div>
+        <button class="btn-full" onclick="doLogin()">Iniciar Sesion</button>
+        <div class="login-divider"><div class="divider-line"></div><span class="divider-text">o continuar con</span><div class="divider-line"></div></div>
+        <div class="social-btns">
+          <button class="social-btn">Google</button>
+          <button class="social-btn">Facebook</button>
+          <button class="social-btn">Apple</button>
+        </div>
+        <p style="text-align:center;margin-top:1.5rem;font-size:0.8rem;color:var(--text-muted);">No tienes cuenta? <span style="color:var(--coral-light);cursor:pointer;font-weight:700;">Registrate gratis</span></p>
+      </div>
+      <div id="loginEmpleado" style="display:none;">
+        <h2 class="login-title">Acceso Empleados</h2>
+        <p class="login-desc">Panel exclusivo del personal de MOVIORA CINES</p>
+        <div class="form-group"><label class="form-label">ID de Empleado</label><input type="text" class="form-input" placeholder="EMP-00000" id="empId"></div>
+        <div class="form-group"><label class="form-label">Correo electronico</label><input type="email" class="form-input" placeholder="empleado@moviora.com" id="empEmail"></div>
+        <div class="form-group"><label class="form-label">Contrasena</label><input type="password" class="form-input" placeholder="••••••••" id="empPass"></div>
+        <div class="form-group">
+          <label class="form-label">Selecciona tu Rol</label>
+          <div class="role-select">
+            <div class="role-option active" onclick="selectRole(this,'admin')"><span style="display:block;font-size:1rem;margin-bottom:0.2rem;">ADM</span><span class="role-label">Administrador</span></div>
+            <div class="role-option" onclick="selectRole(this,'supervisor')"><span style="display:block;font-size:1rem;margin-bottom:0.2rem;">SUP</span><span class="role-label">Supervisor</span></div>
+            <div class="role-option" onclick="selectRole(this,'ventas')"><span style="display:block;font-size:1rem;margin-bottom:0.2rem;">VNT</span><span class="role-label">Emp. Ventas</span></div>
+            <div class="role-option" onclick="selectRole(this,'operador')"><span style="display:block;font-size:1rem;margin-bottom:0.2rem;">OPR</span><span class="role-label">Operador Sala</span></div>
+          </div>
+        </div>
+        <button class="btn-full" onclick="doEmpLogin()">Acceder al Panel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL EMPLEADOS -->
+<div id="page-panel" class="page">
+  <div class="emp-layout">
+    <aside class="emp-sidebar">
+      <div class="emp-sidebar-logo">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:34px;height:34px;background:var(--red-logo);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;font-family:'Playfair Display',serif;">M</div>
+          <div style="font-size:0.8rem;font-weight:800;letter-spacing:1.5px;">MOVIORA <span style="color:var(--coral-light);">PANEL</span></div>
+        </div>
+      </div>
+      <div class="emp-nav-section">General</div>
+      <div class="emp-nav-item active" onclick="empSection('dashboard',this)"><div class="emp-nav-dot"></div>Dashboard</div>
+      <div class="emp-nav-section">Gestion</div>
+      <div class="emp-nav-item" onclick="empSection('salas',this)"><div class="emp-nav-dot"></div>Salas</div>
+      <div class="emp-nav-item" onclick="empSection('funciones',this)"><div class="emp-nav-dot"></div>Funciones</div>
+      <div class="emp-nav-item" onclick="empSection('peliculas',this)"><div class="emp-nav-dot"></div>Peliculas</div>
+      <div class="emp-nav-item" onclick="empSection('ventas',this)"><div class="emp-nav-dot"></div>Ventas</div>
+      <div class="emp-nav-section">Analisis</div>
+      <div class="emp-nav-item" onclick="empSection('estadisticas',this)"><div class="emp-nav-dot"></div>Estadisticas</div>
+      <div style="margin-top:auto;padding:1rem 1.4rem;border-top:1px solid rgba(255,255,255,0.05);">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--text-muted);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:1px;">Sesion activa</div>
+        <div style="font-size:0.85rem;font-weight:800;" id="empPanelUser">Administrador</div>
+        <button class="btn-full-outline" style="margin-top:0.8rem;padding:0.5rem;" onclick="showPage('home')">Cerrar Sesion</button>
+      </div>
+    </aside>
+    <main class="emp-content">
+      <div id="panel-dashboard">
+        <div class="emp-header">
+          <div><div class="emp-title">Dashboard</div><div class="emp-subtitle">Resumen de operaciones de hoy</div></div>
+          <div style="font-size:0.78rem;color:var(--text-muted);font-weight:600;">Sabado, 7 de Junio 2025</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-label">Ingresos del dia</div><div class="stat-value">$18,420</div><div class="stat-change">+12% vs ayer</div></div>
+          <div class="stat-card"><div class="stat-label">Boletos vendidos</div><div class="stat-value">1,247</div><div class="stat-change">+8% vs ayer</div></div>
+          <div class="stat-card"><div class="stat-label">Funciones activas</div><div class="stat-value">24</div><div class="stat-change">6 proximas hoy</div></div>
+          <div class="stat-card"><div class="stat-label">Salas ocupadas</div><div class="stat-value">8/12</div><div class="stat-change">67% ocupacion</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header"><span class="table-title">Funciones Activas Hoy</span><button class="btn-sm btn-sm-primary" onclick="empSection('funciones',null)" style="padding:0.38rem 1rem;">Ver todas</button></div>
+          <table><thead><tr><th>Pelicula</th><th>Sala</th><th>Hora</th><th>Ocupacion</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:700;">El Diablo Viste a la Moda 2</td><td>Sala 1 - IMAX</td><td>14:30</td><td>187/230</td><td><span class="hall-status hall-almost">Casi llena</span></td></tr>
+            <tr><td style="font-weight:700;">Michael</td><td>Sala 3 - 4DX</td><td>15:00</td><td>120/180</td><td><span class="hall-status hall-available">Disponible</span></td></tr>
+            <tr><td style="font-weight:700;">Super Mario</td><td>Sala 2</td><td>16:15</td><td>200/200</td><td><span class="hall-status hall-full">Llena</span></td></tr>
+            <tr><td style="font-weight:700;">Scary Movie 6</td><td>Sala 5</td><td>17:00</td><td>45/150</td><td><span class="hall-status hall-available">Disponible</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+      <div id="panel-salas" style="display:none;">
+        <div class="emp-header"><div><div class="emp-title">Gestion de Salas</div><div class="emp-subtitle">Estado en tiempo real de todas las salas</div></div></div>
+        <div class="table-wrap"><div class="table-header"><span class="table-title">Estado de Salas</span></div>
+          <table><thead><tr><th>Sala</th><th>Tipo</th><th>Capacidad</th><th>Ocupados</th><th>Disponibles</th><th>Estado</th></tr></thead>
+          <tbody id="salasTable"></tbody></table>
+        </div>
+      </div>
+      <div id="panel-funciones" style="display:none;">
+        <div class="emp-header"><div><div class="emp-title">Gestion de Funciones</div><div class="emp-subtitle">Programa y administra las funciones</div></div><button class="btn-full" style="max-width:160px;padding:0.6rem;" onclick="showModal('modalCrearFuncion')">Nueva Funcion</button></div>
+        <div class="table-wrap"><div class="table-header"><span class="table-title">Funciones del dia</span></div>
+          <table><thead><tr><th>Pelicula</th><th>Sala</th><th>Fecha</th><th>Hora</th><th>Precio</th><th>Acciones</th></tr></thead>
+          <tbody id="funcionesTable"></tbody></table>
+        </div>
+      </div>
+      <div id="panel-peliculas" style="display:none;">
+        <div class="emp-header"><div><div class="emp-title">Gestion de Peliculas</div><div class="emp-subtitle">Agrega, edita y administra el catalogo</div></div><button class="btn-full" style="max-width:180px;padding:0.6rem;" onclick="showModal('modalAgregarPelicula')">Agregar Pelicula</button></div>
+        <div class="movies-grid" id="panelMovies"></div>
+      </div>
+      <div id="panel-ventas" style="display:none;">
+        <div class="emp-header"><div><div class="emp-title">Gestion de Ventas</div><div class="emp-subtitle">Vende boletos y consulta historial</div></div><button class="btn-full" style="max-width:150px;padding:0.6rem;" onclick="showPage('pago')">Nueva Venta</button></div>
+        <div style="margin-bottom:1.5rem;display:flex;gap:1rem;"><input type="text" class="form-input" placeholder="Buscar cliente por nombre o correo..." style="max-width:380px;"><button class="btn-full" style="max-width:100px;padding:0.6rem;margin-top:0;">Buscar</button></div>
+        <div class="table-wrap"><div class="table-header"><span class="table-title">Historial de Ventas</span></div>
+          <table><thead><tr><th>ID</th><th>Cliente</th><th>Pelicula</th><th>Asientos</th><th>Total</th><th>Fecha</th><th>Metodo</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--coral-light);font-weight:700;">#TK-4821</td><td>Maria Gonzalez</td><td>El Diablo Viste a la Moda 2</td><td>C5, C6</td><td>$24.00</td><td>07/06/25</td><td>Tarjeta</td></tr>
+            <tr><td style="color:var(--coral-light);font-weight:700;">#TK-4820</td><td>Juan Perez</td><td>Super Mario</td><td>G3</td><td>$12.00</td><td>07/06/25</td><td>Debito</td></tr>
+            <tr><td style="color:var(--coral-light);font-weight:700;">#TK-4819</td><td>Ana Rodriguez</td><td>Michael</td><td>A1, A2, A3</td><td>$36.00</td><td>07/06/25</td><td>Transferencia</td></tr>
+            <tr><td style="color:var(--coral-light);font-weight:700;">#TK-4818</td><td>Carlos Marte</td><td>Scary Movie 6</td><td>F8</td><td>$10.00</td><td>06/06/25</td><td>Tarjeta</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+      <div id="panel-estadisticas" style="display:none;">
+        <div class="emp-header"><div><div class="emp-title">Estadisticas</div><div class="emp-subtitle">Analisis de rendimiento del periodo</div></div></div>
+        <div class="stats-grid" style="margin-bottom:2rem;">
+          <div class="stat-card"><div class="stat-label">Ingresos del mes</div><div class="stat-value">$342,800</div><div class="stat-change">+23% vs mes anterior</div></div>
+          <div class="stat-card"><div class="stat-label">Pelicula mas vista</div><div class="stat-value" style="font-size:0.95rem;margin-top:0.3rem;">El Diablo Viste a la Moda 2</div><div class="stat-change">8,420 espectadores</div></div>
+          <div class="stat-card"><div class="stat-label">Sala mas utilizada</div><div class="stat-value" style="font-size:1.15rem;">Sala 1 IMAX</div><div class="stat-change">98% ocupacion promedio</div></div>
+          <div class="stat-card"><div class="stat-label">Funcion mas popular</div><div class="stat-value" style="font-size:1.15rem;">Sab. 8:00 PM</div><div class="stat-change">Agotada cada semana</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+          <div class="table-wrap"><div class="table-header"><span class="table-title">Top Peliculas</span></div>
+            <table><thead><tr><th>#</th><th>Pelicula</th><th>Tickets</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--coral-light);font-weight:800;">1</td><td>El Diablo Viste a la Moda 2</td><td>8,420</td></tr>
+              <tr><td style="color:var(--coral-light);font-weight:800;">2</td><td>Super Mario</td><td>7,100</td></tr>
+              <tr><td style="color:var(--coral-light);font-weight:800;">3</td><td>Hoppers</td><td>5,840</td></tr>
+              <tr><td style="color:var(--coral-light);font-weight:800;">4</td><td>The Mandalorian</td><td>4,200</td></tr>
+              <tr><td style="color:var(--coral-light);font-weight:800;">5</td><td>Michael</td><td>3,900</td></tr>
+              <tr><td style="color:var(--coral-light);font-weight:800;">6</td><td>De Tal Palo Tal Astilla</td><td>3,210</td></tr>
+              <tr><td style="color:var(--coral-light);font-weight:800;">7</td><td>Scary Movie 6</td><td>2,870</td></tr>
+            </tbody></table>
+          </div>
+          <div class="table-wrap"><div class="table-header"><span class="table-title">Ingresos por Dia</span></div>
+            <table><thead><tr><th>Dia</th><th>Ingresos</th><th>Tickets</th></tr></thead>
+            <tbody>
+              <tr><td>Lunes</td><td>$12,400</td><td>820</td></tr>
+              <tr><td>Martes</td><td>$11,200</td><td>748</td></tr>
+              <tr><td>Miercoles</td><td>$15,600</td><td>1,040</td></tr>
+              <tr><td>Jueves</td><td>$13,800</td><td>921</td></tr>
+              <tr><td>Viernes</td><td>$24,500</td><td>1,634</td></tr>
+              <tr><td>Sabado</td><td>$31,200</td><td>2,080</td></tr>
+              <tr><td>Domingo</td><td>$28,700</td><td>1,914</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- SPOTY -->
+<button class="spoty-btn" onclick="toggleSpoty()" title="Hablar con Spoty - Asistente MOVIORA">
+  <div class="spoty-btn-inner">
+    <div class="spoty-dots-row"><div class="spoty-dot"></div><div class="spoty-dot"></div><div class="spoty-dot"></div></div>
+    <div class="spoty-dots-row"><div class="spoty-dot"></div><div class="spoty-dot" style="background:var(--coral-light);"></div><div class="spoty-dot"></div></div>
+    <div class="spoty-dots-row"><div class="spoty-dot"></div><div class="spoty-dot"></div><div class="spoty-dot"></div></div>
+  </div>
+</button>
+<div class="spoty-panel" id="spotyPanel">
+  <div class="spoty-header">
+    <div class="spoty-avatar">SP</div>
+    <div><div class="spoty-name">Spoty</div><div class="spoty-status">Asistente MOVIORA CINES</div></div>
+    <button class="close-spoty" onclick="toggleSpoty()">x</button>
+  </div>
+  <div class="spoty-messages" id="spotyMessages">
+    <div class="spoty-msg bot">Hola, soy Spoty, tu asistente virtual de MOVIORA CINES. Puedo ayudarte con recomendaciones de peliculas, horarios, sucursales, compra de boletos y mucho mas. Como puedo ayudarte hoy?</div>
+  </div>
+  <div class="spoty-chips" id="spotyChips">
+    <button class="spoty-chip" onclick="spotyQuick('Recomiendame una pelicula')">Recomendar pelicula</button>
+    <button class="spoty-chip" onclick="spotyQuick('Ver horarios disponibles')">Ver horarios</button>
+    <button class="spoty-chip" onclick="spotyQuick('Mostrar sucursales')">Sucursales</button>
+    <button class="spoty-chip" onclick="spotyQuick('Promociones activas')">Promociones</button>
+    <button class="spoty-chip" onclick="spotyQuick('Productos de dulceria')">Dulceria</button>
+  </div>
+  <div class="spoty-input">
+    <input type="text" id="spotyInput" placeholder="Escribe tu mensaje..." onkeydown="if(event.key==='Enter')sendSpoty()">
+    <button class="spoty-send" onclick="sendSpoty()">&#x279C;</button>
+  </div>
+</div>
+
+<!-- MODALES -->
+<div id="modal-ticket" class="modal-overlay" style="display:none;" onclick="closeModal('modal-ticket')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header"><span class="modal-title">Tu Boleto</span><button class="close-modal" onclick="closeModal('modal-ticket')">x</button></div>
+    <div class="modal-body">
+      <div class="ticket">
+        <div class="ticket-top">
+          <div><div class="ticket-movie-name" id="ticketMovieName">El Diablo Viste a la Moda 2</div><div class="ticket-cinema-name">MOVIORA CINES - Santo Domingo</div></div>
+          <div class="ticket-id">Boleto #TK-4822</div>
+        </div>
+        <hr class="ticket-divider">
+        <div class="ticket-body">
+          <div class="ticket-field"><label>Fecha</label><span>07 Junio 2025</span></div>
+          <div class="ticket-field"><label>Hora</label><span>8:30 PM</span></div>
+          <div class="ticket-field"><label>Sala</label><span>Sala 1 - IMAX</span></div>
+          <div class="ticket-field"><label>Asientos</label><span id="ticketSeats">C5, C6</span></div>
+          <div class="ticket-field"><label>Formato</label><span>IMAX 3D</span></div>
+          <div class="ticket-field"><label>Total pagado</label><span style="color:var(--coral-light);">$24.00</span></div>
+        </div>
+        <div class="ticket-barcode">
+          <div class="barcode-lines" id="barcodeLines"></div>
+          <div class="barcode-num">4822 8841 2930 7741</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+        <button class="btn-full" style="margin-top:0;" onclick="window.print()">Imprimir Boleto</button>
+        <button class="btn-full-outline" style="margin-top:0;" onclick="closeModal('modal-ticket')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-seats" class="modal-overlay" style="display:none;" onclick="closeModal('modal-seats')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:680px;">
+    <div class="modal-header"><span class="modal-title" id="seatModalTitle">Seleccionar Asientos</span><button class="close-modal" onclick="closeModal('modal-seats')">x</button></div>
+    <div class="modal-body">
+      <div style="margin-bottom:1rem;font-size:0.82rem;color:var(--text-muted);">Funcion: <strong style="color:var(--text);">Sabado 07 Jun - 8:30 PM</strong> &nbsp;|&nbsp; Precio por asiento: <strong style="color:var(--coral-light);" id="seatPrice">$12.00</strong></div>
+      <div class="seat-legend">
+        <div class="legend-item"><div class="seat-dot seat-dot-free"></div>Disponible</div>
+        <div class="legend-item"><div class="seat-dot seat-dot-taken"></div>Ocupado</div>
+        <div class="legend-item"><div class="seat-dot seat-dot-selected"></div>Seleccionado</div>
+      </div>
+      <div style="overflow-x:auto;">
+        <div class="screen">PANTALLA</div>
+        <div class="seats-container" id="seatMap"></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;flex-wrap:wrap;gap:1rem;">
+        <div style="font-size:0.85rem;color:var(--text-muted);">Seleccionados: <strong style="color:var(--coral-light);" id="selectedSeatsLabel">Ninguno</strong></div>
+        <button class="btn-full" style="max-width:200px;margin-top:0;" onclick="addToCart()">Agregar al Carrito</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalCrearFuncion" class="modal-overlay" style="display:none;" onclick="closeModal('modalCrearFuncion')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header"><span class="modal-title">Nueva Funcion</span><button class="close-modal" onclick="closeModal('modalCrearFuncion')">x</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Pelicula</label><select class="form-select"><option>Seleccionar pelicula</option><option>El Diablo Viste a la Moda 2</option><option>Michael</option><option>Super Mario</option><option>Hoppers</option><option>De Tal Palo Tal Astilla</option><option>The Mandalorian</option><option>Scary Movie 6</option></select></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input"></div><div class="form-group"><label class="form-label">Hora</label><input type="time" class="form-input"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Sala</label><select class="form-select"><option>Sala 1 - IMAX</option><option>Sala 2</option><option>Sala 3 - 4DX</option><option>Sala 4</option><option>Sala 5</option></select></div><div class="form-group"><label class="form-label">Precio ($)</label><input type="number" class="form-input" placeholder="12.00"></div></div>
+      <div class="form-group"><label class="form-label">Formato</label><select class="form-select"><option>2D</option><option>3D</option><option>IMAX</option><option>IMAX 3D</option><option>4DX</option></select></div>
+      <button class="btn-full" onclick="closeModal('modalCrearFuncion');showNotif('Funcion creada exitosamente')">Crear Funcion</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalAgregarPelicula" class="modal-overlay" style="display:none;" onclick="closeModal('modalAgregarPelicula')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header"><span class="modal-title">Agregar Pelicula</span><button class="close-modal" onclick="closeModal('modalAgregarPelicula')">x</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Titulo</label><input type="text" class="form-input" placeholder="Titulo de la pelicula"></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Genero</label><select class="form-select"><option>Accion</option><option>Drama</option><option>Comedia</option><option>Terror</option><option>Animacion</option><option>Ciencia Ficcion</option></select></div><div class="form-group"><label class="form-label">Duracion (min)</label><input type="number" class="form-input" placeholder="120"></div></div>
+      <div class="form-group"><label class="form-label">Clasificacion</label><select class="form-select"><option>G - Para todo publico</option><option>PG</option><option>PG-13</option><option>R</option></select></div>
+      <div class="form-group"><label class="form-label">Sinopsis</label><textarea class="form-input" rows="3" placeholder="Descripcion de la pelicula..." style="resize:vertical;"></textarea></div>
+      <div class="form-group"><label class="form-label">URL del Poster</label><input type="text" class="form-input" placeholder="https://..."></div>
+      <button class="btn-full" onclick="closeModal('modalAgregarPelicula');showNotif('Pelicula agregada exitosamente')">Guardar Pelicula</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const movies=[
+  {id:1,title:'El Diablo Viste a la Moda 2',genre:'comedia',rating:8.4,duration:'2h 05m',badge:'hot',price:12,color1:'#3D0D2B',color2:'#1A0510',desc:'La secuela mas esperada. Miranda Priestly regresa mas implacable que nunca en el mundo de la alta moda.'},
+  {id:2,title:'Michael',genre:'drama',rating:8.9,duration:'2h 30m',badge:'hot',price:13,color1:'#0A1520',color2:'#030810',desc:'La historia definitiva de Michael Jackson. Un biopic que explora su vida, musica y legado inmortal.'},
+  {id:3,title:'Super Mario',genre:'animacion',rating:8.7,duration:'1h 52m',badge:'hot',price:11,color1:'#1A0A00',color2:'#0D0500',desc:'Mario y Luigi regresan en una nueva aventura animada llena de accion, color y emocion familiar.'},
+  {id:4,title:'Hoppers',genre:'accion',rating:7.8,duration:'1h 58m',badge:'new',price:12,color1:'#001A10',color2:'#000D08',desc:'Un grupo de soldados de elite debe saltar entre dimensiones para salvar el tejido del universo.'},
+  {id:5,title:'De Tal Palo Tal Astilla',genre:'comedia',rating:7.5,duration:'1h 45m',badge:'new',price:10,color1:'#1A1000',color2:'#0D0800',desc:'Una comedia familiar que demuestra que los hijos siempre heredan algo de sus padres, para bien o para mal.'},
+  {id:6,title:'The Mandalorian',genre:'accion',rating:9.0,duration:'2h 20m',badge:'hot',price:14,color1:'#0A0A1A',color2:'#050510',desc:'Din Djarin y Grogu enfrentan su mayor desafio en la galaxia en esta esperada adaptacion cinematografica.'},
+  {id:7,title:'Scary Movie 6',genre:'terror',rating:7.2,duration:'1h 38m',badge:'new',price:10,color1:'#1A0000',color2:'#0D0000',desc:'La iconica franquicia de parodia de terror regresa con nuevas escenas, nuevos personajes y mas risas.'},
+];
+
+const snacks=[
+  {name:'Palomitas Grandes',desc:'Nuestras icónicas palomitas con mantequilla premium. Crujientes y deliciosas.',price:5.50},
+  {name:'Palomitas Medianas',desc:'La opcion perfecta para una persona. El clasico infaltable del cine.',price:3.50},
+  {name:'Refresco Grande 32oz',desc:'Refresco frio de 32oz para acompañar tu pelicula favorita.',price:4.00},
+  {name:'Agua Mineral',desc:'Agua mineral natural sin gas, refrescante y saludable.',price:2.50},
+  {name:'Nachos con Queso',desc:'Nachos crujientes bañados en nuestra salsa de queso especial casero.',price:6.50},
+  {name:'Hot Dog Premium',desc:'Hot dog de primera calidad con todos los ingredientes que desees.',price:5.00},
+  {name:'Combo Duo',desc:'2 palomitas medianas mas 2 refrescos. La opcion perfecta para dos.',price:13.00},
+  {name:'M&Ms',desc:'Los clasicos chocolates M&Ms para picar durante toda la funcion.',price:3.00},
+  {name:'Dulces Surtidos',desc:'Variedad de dulces y caramelos importados de la mejor calidad.',price:2.50},
+  {name:'Cafe Americano',desc:'Cafe americano caliente o frio. Disponible en tres tamaños.',price:3.50},
+  {name:'Helado en Vaso',desc:'Delicioso helado en vaso disponible en 5 sabores distintos.',price:4.00},
+  {name:'Combo Familiar',desc:'4 palomitas grandes mas 4 refrescos mas nachos con queso. Para toda la familia.',price:28.00},
+];
+
+const promos=[
+  {tag:'ESPECIAL',tagClass:'promo-tag-a',title:'Martes de Cine 2x1',desc:'Todos los martes compra un boleto y lleva a un acompañante gratis. Valido para funciones regulares y 3D en cualquier sucursal.',code:'MARTES2X1'},
+  {tag:'PAREJA',tagClass:'promo-tag-b',title:'Combo Pareja',desc:'2 boletos mas 2 palomitas grandes mas 2 refrescos por tan solo $29.99. Ahorra hasta $15 en tu cita de cine perfecta.',code:'PAREJA30'},
+  {tag:'PREMIUM',tagClass:'promo-tag-c',title:'Club Moviora Premium',desc:'Suscribete al club y obtén un 20% de descuento permanente en todas tus compras, puntos acumulables y beneficios exclusivos.',code:'PREMIUM20'},
+  {tag:'VERANO',tagClass:'promo-tag-a',title:'Promo Verano 3D',desc:'Durante el verano disfruta de todas las peliculas en formato 3D al precio de 2D. Temporada limitada, no te lo pierdas.',code:'VERANO3D'},
+  {tag:'FAMILIA',tagClass:'promo-tag-b',title:'Domingos en Familia',desc:'Los domingos: 4 boletos por el precio de 3 mas combo familiar de dulceria con 25% de descuento adicional.',code:'FAMILIA4X3'},
+  {tag:'ESTUDIANTIL',tagClass:'promo-tag-c',title:'Descuento Universitario',desc:'Presenta tu carnet universitario y obtén 30% de descuento en todos los boletos. Valido cualquier dia de la semana.',code:'UNIV30'},
+];
+
+const locations=[
+  {country:'Reino Unido',flag:'GB',branches:[{city:'Londres',address:'45 Leicester Square, West End, London WC2H 7LQ',phone:'+44 20 7123 4567',hours:'10:00 AM - 12:00 AM',salas:12}]},
+  {country:'Corea del Sur',flag:'KR',branches:[{city:'Seoul',address:'123 Gangnam-daero, Gangnam-gu, Seoul',phone:'+82 2 1234 5678',hours:'09:00 AM - 1:00 AM',salas:10}]},
+  {country:'Republica Dominicana',flag:'DO',branches:[
+    {city:'Santo Domingo',address:'Av. Winston Churchill esq. Gustavo Mejia Ricart, DN',phone:'809-567-8900',hours:'10:00 AM - 12:00 AM',salas:14},
+    {city:'Santiago',address:'Centro Comercial Bella Terra, Santiago de los Caballeros',phone:'809-971-2300',hours:'10:00 AM - 11:00 PM',salas:10},
+    {city:'San Juan',address:'Calle Duarte #45, San Juan de la Maguana',phone:'809-557-1100',hours:'10:00 AM - 10:00 PM',salas:6},
+    {city:'Punta Cana',address:'Bavaro Town Center, Bavaro Beach, La Altagracia',phone:'809-552-1800',hours:'09:00 AM - 12:00 AM',salas:8},
+    {city:'Azua',address:'Av. Independencia #12, Azua de Compostela',phone:'809-521-0500',hours:'10:00 AM - 10:00 PM',salas:4},
+    {city:'Bahoruco',address:'Calle Principal #8, Neiba, Provincia Bahoruco',phone:'809-524-3200',hours:'10:00 AM - 9:00 PM',salas:3},
+    {city:'Elias Pina',address:'Av. Restauracion #22, Comendador, Elias Pina',phone:'809-572-4100',hours:'10:00 AM - 9:00 PM',salas:3},
+  ]},
+  {country:'Haiti',flag:'HT',branches:[{city:'Port-au-Prince',address:'Place Boyer, Petion-Ville, Port-au-Prince',phone:'+509 3444 5678',hours:'09:00 AM - 11:00 PM',salas:8}]},
+  {country:'Puerto Rico',flag:'PR',branches:[
+    {city:'San Juan',address:'Mall of San Juan, 49 Premium Outlets Blvd, Isla Verde',phone:'787-768-9000',hours:'10:00 AM - 11:00 PM',salas:12},
+    {city:'Bayamon',address:'Las Catalinas Mall, PR-2 Km 14.1, Bayamon',phone:'787-778-5500',hours:'10:00 AM - 11:00 PM',salas:10},
+  ]},
+  {country:'India',flag:'IN',branches:[{city:'Nueva Delhi',address:'DLF Promenade, Nelson Mandela Marg, Vasant Kunj',phone:'+91 11 4567 8901',hours:'10:00 AM - 12:00 AM',salas:16}]},
+  {country:'Emiratos Arabes Unidos',flag:'AE',branches:[{city:'Dubai',address:'Dubai Mall, Financial Centre Road, Downtown Dubai',phone:'+971 4 362 7444',hours:'10:00 AM - 2:00 AM',salas:20}]},
+  {country:'Sudafrica',flag:'ZA',branches:[
+    {city:'Johannesburgo',address:'Sandton City Shopping Centre, 163 Rivonia Rd, Sandton',phone:'+27 11 783 0000',hours:'09:00 AM - 11:00 PM',salas:14},
+    {city:'Ciudad del Cabo',address:'V&A Waterfront, Dock Rd, Cape Town',phone:'+27 21 418 3200',hours:'09:00 AM - 11:00 PM',salas:12},
+    {city:'Durban',address:'Gateway Theatre of Shopping, 1 Palm Blvd, Umhlanga',phone:'+27 31 566 2800',hours:'09:00 AM - 10:00 PM',salas:10},
+  ]},
+];
+
+const salasData=[
+  {name:'Sala 1',tipo:'IMAX',cap:230,ocupados:187},{name:'Sala 2',tipo:'Premium',cap:200,ocupados:200},
+  {name:'Sala 3',tipo:'4DX',cap:180,ocupados:120},{name:'Sala 4',tipo:'Estandar',cap:150,ocupados:45},
+  {name:'Sala 5',tipo:'Estandar',cap:150,ocupados:90},{name:'Sala 6',tipo:'VIP',cap:80,ocupados:12},
+  {name:'Sala 7',tipo:'Estandar',cap:150,ocupados:150},{name:'Sala 8',tipo:'3D',cap:180,ocupados:165},
+  {name:'Sala 9',tipo:'Estandar',cap:150,ocupados:0},{name:'Sala 10',tipo:'Premium',cap:200,ocupados:88},
+  {name:'Sala 11',tipo:'IMAX',cap:250,ocupados:240},{name:'Sala 12',tipo:'Estandar',cap:150,ocupados:30},
+];
+
+const funcionesData=[
+  {movie:'El Diablo Viste a la Moda 2',sala:'Sala 1 - IMAX',fecha:'07/06/2025',hora:'14:30',precio:'$14.00'},
+  {movie:'The Mandalorian',sala:'Sala 2',fecha:'07/06/2025',hora:'16:15',precio:'$14.00'},
+  {movie:'Michael',sala:'Sala 3 - 4DX',fecha:'07/06/2025',hora:'15:00',precio:'$16.00'},
+  {movie:'Scary Movie 6',sala:'Sala 5',fecha:'07/06/2025',hora:'17:00',precio:'$10.00'},
+  {movie:'Super Mario',sala:'Sala 4',fecha:'07/06/2025',hora:'19:30',precio:'$11.00'},
+  {movie:'Hoppers',sala:'Sala 6 - VIP',fecha:'07/06/2025',hora:'20:00',precio:'$13.00'},
+  {movie:'De Tal Palo Tal Astilla',sala:'Sala 7',fecha:'07/06/2025',hora:'20:30',precio:'$10.00'},
+];
+
+const spotyResponses={
+  'recomiendame una pelicula':'Te recomiendo Michael con calificacion de 9.0/10, es nuestra pelicula mejor valorada esta temporada. Si prefieres accion, The Mandalorian es una experiencia espectacular. Para ver en familia, Super Mario es perfecta. Quieres ver los horarios de alguna?',
+  'ver horarios disponibles':'Hoy tenemos funciones desde las 2:30 PM hasta las 10:30 PM. La funcion de El Diablo Viste a la Moda 2 a las 8:30 PM esta casi agotada. Te recomiendo reservar con anticipacion. Quieres comprar tus boletos ahora?',
+  'mostrar sucursales':'Tenemos mas de 25 sucursales en 12 paises: Republica Dominicana cuenta con 7 sucursales incluyendo Santo Domingo, Santiago, San Juan, Punta Cana, Azua, Bahoruco y Elias Pina. Tambien estamos en Reino Unido, Corea del Sur, India, Emiratos Arabes Unidos, Sudafrica, Haiti y Puerto Rico. Visita Locations para ver todas!',
+  'promociones activas':'Tenemos 6 promociones activas ahora mismo: Martes 2x1 en todos los boletos, Combo Pareja por $29.99, Club Premium con 20% de descuento permanente, Promo Verano 3D al precio de 2D, Domingos en Familia 4 por 3, y Descuento Universitario del 30%. Cual te interesa?',
+  'productos de dulceria':'Contamos con palomitas en varios tamaños, nachos con queso, hot dogs, refrescos, agua mineral, helados, cafe, M&Ms, dulces surtidos y nuestro exclusivo Combo Familiar. El Combo Duo es la opcion mas popular para parejas. Quieres agregar algo a tu carrito?',
+  default:'Gracias por tu mensaje. Estoy aqui para ayudarte a encontrar la pelicula perfecta, revisar horarios, encontrar tu sucursal mas cercana, orientarte con la compra de boletos y recomendarte productos de dulceria. En que te ayudo?'
+};
+
+let selectedRole='admin',cartItems=[],selectedSeats=[],currentMovieForSeats=null,spotyOpen=false;
+
+function movieCardHTML(m,panel=false){
+  const badges={hot:'HOT',new:'NUEVO',soon:'PRONTO'};
+  const badgeClass={hot:'badge-hot',new:'badge-new',soon:'badge-soon'};
+  return `<div class="movie-card">
+    <div class="movie-poster-bg" style="background:linear-gradient(160deg,${m.color1},${m.color2});">
+      <div class="movie-poster-title">${m.title}</div>
+    </div>
+    ${m.badge?`<span class="movie-badge ${badgeClass[m.badge]}">${badges[m.badge]}</span>`:''}
+    <div class="movie-info">
+      <div class="movie-title-card">${m.title}</div>
+      <div class="movie-meta">
+        <span class="movie-rating">★ ${m.rating}</span>
+        <span>${m.duration}</span>
+        <span class="movie-genre-tag">${m.genre}</span>
+      </div>
+      <div class="movie-actions">
+        <button class="btn-sm btn-sm-primary" onclick="openSeatModal(${m.id})">Comprar</button>
+        ${panel
+          ?`<button class="btn-sm btn-sm-outline" onclick="showModal('modalAgregarPelicula')">Editar</button>`
+          :`<button class="btn-sm btn-sm-outline" onclick="openSeatModal(${m.id})">Asientos</button>`}
+      </div>
+    </div>
+  </div>`;
+}
+
+function showPage(page,navEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  if(navEl){document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));navEl.classList.add('active');}
+  window.scrollTo(0,0);
+  if(page==='cartelera')renderCartelera();
+  if(page==='dulceria')renderDulceria();
+  if(page==='locations')renderLocations();
+  if(page==='promociones')renderPromos();
+  if(page==='compras')renderCompras();
+  if(page==='panel')renderPanel();
+}
+
+function renderCartelera(){document.getElementById('cartelera-grid').innerHTML=movies.map(m=>movieCardHTML(m)).join('');}
+function filterMovies(g,el){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');
+  const f=g==='all'?movies:movies.filter(m=>m.genre===g);
+  document.getElementById('cartelera-grid').innerHTML=f.map(m=>movieCardHTML(m)).join('');
+}
+
+function renderDulceria(){
+  document.getElementById('dulceria-grid').innerHTML=snacks.map((s,i)=>`
+    <div class="dulce-card">
+      <div class="dulce-img-box"><div class="dulce-img-label">${s.name.toUpperCase()}</div></div>
+      <div class="dulce-info">
+        <div class="dulce-name">${s.name}</div>
+        <div class="dulce-desc">${s.desc}</div>
+        <div class="dulce-footer">
+          <div class="dulce-price">$${s.price.toFixed(2)}</div>
+          <button class="add-btn" onclick="addSnack(${i})">+</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function addSnack(i){
+  cartItems.push({type:'snack',...snacks[i]});
+  updateCartBadge();showNotif(snacks[i].name+' agregado al carrito');
+}
+
+function renderLocations(){
+  document.getElementById('locations-content').innerHTML=locations.map(l=>`
+    <div class="country-section">
+      <div class="country-header">
+        <span class="country-flag" style="font-size:1.5rem;font-weight:700;color:var(--pink-soft);border:1px solid rgba(215,93,70,0.3);padding:0.2rem 0.5rem;border-radius:5px;font-family:var(--font);letter-spacing:1px;">${l.flag}</span>
+        <span class="country-name">${l.country}</span>
+        <span class="country-count">${l.branches.length} sucursal${l.branches.length>1?'es':''}</span>
+      </div>
+      <div class="branches-grid">
+        ${l.branches.map(b=>`
+          <div class="branch-card">
+            <div class="branch-header">
+              <div class="branch-city">${b.city}</div>
+              <div class="branch-salas">${b.salas} salas disponibles</div>
+            </div>
+            <div class="branch-body">
+              <div class="branch-detail"><span class="branch-detail-label">Direccion</span><span>${b.address}</span></div>
+              <div class="branch-detail"><span class="branch-detail-label">Telefono</span><span>${b.phone}</span></div>
+              <div class="branch-detail"><span class="branch-detail-label">Horario</span><span>${b.hours}</span></div>
+            </div>
+            <div class="branch-actions">
+              <button class="btn-sm btn-sm-primary" onclick="showPage('cartelera')" style="flex:1;">Ver Cartelera</button>
+              <button class="btn-sm btn-sm-outline" style="flex:1;">Ver Mapa</button>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function renderPromos(){
+  document.getElementById('promos-grid').innerHTML=promos.map(p=>`
+    <div class="promo-card">
+      <div class="promo-accent"></div>
+      <span class="promo-tag ${p.tagClass}">${p.tag}</span>
+      <div class="promo-title">${p.title}</div>
+      <div class="promo-desc">${p.desc}</div>
+      <div class="promo-code-row">
+        <span class="promo-code-val">${p.code}</span>
+        <button class="copy-btn" onclick="copyCode('${p.code}')">Copiar</button>
+      </div>
+    </div>`).join('');
+}
+
+function copyCode(c){navigator.clipboard.writeText(c).catch(()=>{});showNotif('Codigo '+c+' copiado');}
+
+function renderCompras(){
+  const purchases=[
+    {title:'El Diablo Viste a la Moda 2',sub:'Sala 1 IMAX - 07 Jun 2025 - 8:30 PM - Asientos C5, C6',status:'Confirmado',price:'$24.00'},
+    {title:'Combo Pareja Dulceria',sub:'Palomitas x2 + Refrescos x2 - 07 Jun 2025',status:'Confirmado',price:'$13.00'},
+    {title:'The Mandalorian',sub:'Sala 2 - 01 Jun 2025 - 7:00 PM - Asiento A3',status:'Confirmado',price:'$14.00'},
+  ];
+  document.getElementById('purchases-list').innerHTML=purchases.map(p=>`
+    <div class="purchase-card">
+      <div class="purchase-poster">${p.title.substring(0,12).toUpperCase()}</div>
+      <div><div class="purchase-title">${p.title}</div><div class="purchase-sub">${p.sub}</div></div>
+      <div style="text-align:right;">
+        <span class="status-badge status-confirmed">${p.status}</span>
+        <div class="purchase-price">${p.price}</div>
+        <button class="btn-sm btn-sm-outline" style="margin-top:0.5rem;padding:0.35rem 0.8rem;" onclick="showModal('modal-ticket')">Ver Boleto</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderPanel(){
+  if(document.getElementById('salasTable'))
+    document.getElementById('salasTable').innerHTML=salasData.map(s=>{
+      const pct=Math.round(s.ocupados/s.cap*100);
+      const st=pct>=100?'full':pct>=80?'almost':'available';
+      const label={full:'Llena',almost:'Casi llena',available:'Disponible'};
+      const barColor=pct>=100?'#E11919':pct>=80?'#D75D46':'#4CAF7D';
+      return `<tr>
+        <td style="font-weight:700;">${s.name}</td><td>${s.tipo}</td><td>${s.cap}</td>
+        <td>${s.ocupados}</td><td>${s.cap-s.ocupados}</td>
+        <td><div style="display:flex;align-items:center;gap:0.6rem;">
+          <div class="progress-bar" style="width:75px;"><div class="progress-fill" style="width:${pct}%;background:${barColor};"></div></div>
+          <span class="hall-status hall-${st}">${label[st]}</span>
+        </div></td>
+      </tr>`;}).join('');
+
+  if(document.getElementById('funcionesTable'))
+    document.getElementById('funcionesTable').innerHTML=funcionesData.map(f=>`
+      <tr>
+        <td style="font-weight:700;">${f.movie}</td><td>${f.sala}</td><td>${f.fecha}</td>
+        <td>${f.hora}</td><td style="color:var(--coral-light);font-weight:700;">${f.precio}</td>
+        <td style="display:flex;gap:0.4rem;">
+          <button class="btn-sm btn-sm-outline" style="padding:0.28rem 0.6rem;" onclick="showModal('modalCrearFuncion')">Editar</button>
+          <button class="btn-sm" style="padding:0.28rem 0.6rem;background:rgba(225,25,25,0.1);border:1px solid rgba(225,25,25,0.25);color:#F87171;border-radius:6px;cursor:pointer;font-family:var(--font);font-size:0.75rem;font-weight:700;" onclick="showNotif('Funcion cancelada')">Cancelar</button>
+        </td>
+      </tr>`).join('');
+
+  if(document.getElementById('panelMovies'))
+    document.getElementById('panelMovies').innerHTML=movies.map(m=>movieCardHTML(m,true)).join('');
+
+  if(document.getElementById('homeMovies'))
+    document.getElementById('homeMovies').innerHTML=movies.map(m=>movieCardHTML(m)).join('');
+}
+
+function openSeatModal(movieId){
+  currentMovieForSeats=movies.find(m=>m.id===movieId);
+  document.getElementById('seatModalTitle').textContent='Asientos - '+currentMovieForSeats.title;
+  document.getElementById('seatPrice').textContent='$'+currentMovieForSeats.price.toFixed(2);
+  selectedSeats=[];
+  document.getElementById('selectedSeatsLabel').textContent='Ninguno';
+  generateSeatMap();showModal('modal-seats');
+}
+
+function generateSeatMap(){
+  const rows=['A','B','C','D','E','F','G','H'];
+  const taken=new Set(['A2','A5','B3','B4','C1','C7','D5','D6','E3','E8','F2','F9','G4','H1','H6','B7','D2','E6','F5']);
+  let html='';
+  rows.forEach(r=>{
+    html+=`<div class="seat-row"><span class="row-label">${r}</span>`;
+    for(let c=1;c<=10;c++){
+      const id=r+c,t=taken.has(id);
+      html+=`<div class="seat${t?' taken':''}" id="seat-${id}" ${t?'':` onclick="toggleSeat('${id}')"`} title="${id}"></div>`;
+      if(c===5)html+=`<div class="seat-gap"></div>`;
+    }
+    html+='</div>';
+  });
+  document.getElementById('seatMap').innerHTML=html;
+}
+
+function toggleSeat(id){
+  const el=document.getElementById('seat-'+id);
+  if(el.classList.contains('taken'))return;
+  if(el.classList.contains('selected')){el.classList.remove('selected');selectedSeats=selectedSeats.filter(s=>s!==id);}
+  else{el.classList.add('selected');selectedSeats.push(id);}
+  document.getElementById('selectedSeatsLabel').textContent=selectedSeats.length?selectedSeats.join(', '):'Ninguno';
+}
+
+function addToCart(){
+  if(!selectedSeats.length){showNotif('Selecciona al menos un asiento');return;}
+  cartItems.push({type:'ticket',title:currentMovieForSeats.title,seats:selectedSeats.join(', '),price:currentMovieForSeats.price*selectedSeats.length});
+  updateCartBadge();closeModal('modal-seats');showNotif('Boletos agregados al carrito');
+}
+
+function updateCartBadge(){
+  const b=document.getElementById('cartBadge');
+  b.style.display=cartItems.length?'flex':'none';
+  b.textContent=cartItems.length;
+}
+
+function switchLoginTab(tab,el){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');
+  document.getElementById('loginCliente').style.display=tab==='cliente'?'':'none';
+  document.getElementById('loginEmpleado').style.display=tab==='empleado'?'':'none';
+}
+
+function selectRole(el,role){
+  document.querySelectorAll('.role-option').forEach(r=>r.classList.remove('active'));
+  el.classList.add('active');selectedRole=role;
+}
+
+function doLogin(){
+  const e=document.getElementById('loginEmail').value,p=document.getElementById('loginPass').value;
+  if(!e||!p){showNotif('Completa todos los campos');return;}
+  document.getElementById('welcomeBanner').style.display='flex';
+  document.getElementById('welcomeUserName').textContent='Sesion iniciada como '+e.split('@')[0];
+  showPage('home');renderPanel();showNotif('Bienvenido a MOVIORA CINES');
+}
+
+function doEmpLogin(){
+  const id=document.getElementById('empId').value,e=document.getElementById('empEmail').value,p=document.getElementById('empPass').value;
+  if(!id||!e||!p){showNotif('Completa todos los campos');return;}
+  const names={admin:'Administrador',supervisor:'Supervisor',ventas:'Empleado de Ventas',operador:'Operador de Sala'};
+  document.getElementById('empPanelUser').textContent=names[selectedRole]+' - '+id;
+  showPage('panel');renderPanel();showNotif('Acceso concedido como '+names[selectedRole]);
+}
+
+function empSection(s,el){
+  document.querySelectorAll('[id^="panel-"]').forEach(p=>p.style.display='none');
+  document.getElementById('panel-'+s).style.display='';
+  if(el){document.querySelectorAll('.emp-nav-item').forEach(i=>i.classList.remove('active'));el.classList.add('active');}
+}
+
+function setPayMethod(m,el){
+  document.querySelectorAll('.pay-method').forEach(x=>x.classList.remove('active'));el.classList.add('active');
+  document.getElementById('payFormCard').style.display=m==='transferencia'?'none':'';
+  document.getElementById('payFormTransfer').style.display=m==='transferencia'?'':'none';
+}
+
+function processPay(){
+  cartItems=[];updateCartBadge();generateBarcode();
+  showModal('modal-ticket');showNotif('Pago confirmado. Tu boleto esta listo');
+}
+
+function generateBarcode(){
+  let h='';
+  for(let i=0;i<42;i++){const w=Math.random()>0.72?'wide':'';h+=`<div class="barcode-line ${w}" style="height:${28+Math.random()*18}px;opacity:${0.55+Math.random()*0.45};"></div>`;}
+  document.getElementById('barcodeLines').innerHTML=h;
+}
+
+function formatCard(el){let v=el.value.replace(/\D/g,'').substring(0,16);el.value=v.replace(/(.{4})/g,'$1 ').trim();}
+function formatExpiry(el){let v=el.value.replace(/\D/g,'');if(v.length>2)v=v.substring(0,2)+'/'+v.substring(2,4);el.value=v;}
+function showModal(id){document.getElementById(id).style.display='flex';}
+function closeModal(id){document.getElementById(id).style.display='none';}
+
+function showNotif(msg){
+  const el=document.createElement('div');el.className='notification';
+  el.innerHTML=`<div class="notif-text">${msg}</div>`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.style.opacity='0',2400);
+  setTimeout(()=>el.remove(),2800);
+}
+
+function toggleSpoty(){spotyOpen=!spotyOpen;document.getElementById('spotyPanel').classList.toggle('open',spotyOpen);}
+
+function sendSpoty(){
+  const inp=document.getElementById('spotyInput');const msg=inp.value.trim();if(!msg)return;
+  const msgs=document.getElementById('spotyMessages');
+  msgs.innerHTML+=`<div class="spoty-msg user">${msg}</div>`;
+  inp.value='';document.getElementById('spotyChips').style.display='none';
+  setTimeout(()=>{
+    const k=msg.toLowerCase();let resp=spotyResponses.default;
+    for(const key in spotyResponses){if(k.includes(key))resp=spotyResponses[key];}
+    msgs.innerHTML+=`<div class="spoty-msg bot">${resp}</div>`;
+    msgs.scrollTop=msgs.scrollHeight;
+  },700);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function spotyQuick(msg){document.getElementById('spotyInput').value=msg;sendSpoty();}
+
+const footerHTML=`<footer><div class="footer-inner">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:38px;height:38px;background:var(--red-logo);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fff;font-family:'Playfair Display',serif;">M</div>
+        <span style="font-size:1rem;font-weight:800;letter-spacing:2.5px;">MOVIORA <span style="color:var(--coral-light);">CINES</span></span>
+      </div>
+      <p>La experiencia cinematografica mas premium del mundo. Presentes en 12 paises con mas de 25 sucursales a nivel global.</p>
+    </div>
+    <div class="footer-col"><h4>Navegacion</h4>
+      <a onclick="showPage('cartelera')">Cartelera</a>
+      <a onclick="showPage('dulceria')">Dulceria</a>
+      <a onclick="showPage('promociones')">Promociones</a>
+      <a onclick="showPage('locations')">Locations</a>
+    </div>
+    <div class="footer-col"><h4>Mi Cuenta</h4>
+      <a onclick="showPage('login')">Iniciar Sesion</a>
+      <a onclick="showPage('compras')">Mis Compras</a>
+      <a onclick="showPage('carrito')">Mi Carrito</a>
+    </div>
+    <div class="footer-col"><h4>Soporte</h4>
+      <a href="#">Centro de Ayuda</a>
+      <a href="#">Contactanos</a>
+      <a href="#">Terminos de Uso</a>
+      <a href="#">Politica de Privacidad</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">2025 MOVIORA CINES. Todos los derechos reservados.</span>
+    <div class="footer-social">
+      <div class="social-icon">FB</div>
+      <div class="social-icon">IG</div>
+      <div class="social-icon">TW</div>
+      <div class="social-icon">YT</div>
+    </div>
+  </div>
+</div></footer>`;
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('homeMovies').innerHTML=movies.map(m=>movieCardHTML(m)).join('');
+  document.getElementById('mainFooter').innerHTML=footerHTML;
+  generateBarcode();
+});
+</script>
+</body>
+</html>
