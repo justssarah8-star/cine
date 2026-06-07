@@ -1,0 +1,67 @@
+DROP TABLE IF EXISTS pagos CASCADE;
+DROP TABLE IF EXISTS carrito CASCADE;
+DROP TABLE IF EXISTS asientos CASCADE;
+DROP TABLE IF EXISTS funciones CASCADE;
+DROP TABLE IF EXISTS comida CASCADE;
+DROP TABLE IF EXISTS peliculas CASCADE;
+DROP TABLE IF EXISTS clientes CASCADE;
+DROP TABLE IF EXISTS empleados CASCADE;
+
+CREATE TABLE empleados (id VARCHAR(10) PRIMARY KEY, correo VARCHAR(100) NOT NULL UNIQUE, contrasena VARCHAR(255) NOT NULL CHECK (length(contrasena) >= 8), rol VARCHAR(30) NOT NULL DEFAULT 'empleado_ventas' CHECK (rol IN ('administrador','empleado_ventas','operador')), creado_en TIMESTAMP DEFAULT NOW());
+
+INSERT INTO empleados (id, correo, contrasena, rol) VALUES ('SS#26', 'sarah@moviora.com', 'SSmoviora', 'empleado_ventas'), ('SM#26', 'sofia@moviora.com', 'SMmoviora', 'empleado_ventas'), ('PC#26', 'paola@moviora.com', 'PCmoviora', 'empleado_ventas');
+
+CREATE TABLE clientes (id SERIAL PRIMARY KEY, nombre VARCHAR(40) NOT NULL CHECK (length(nombre) >= 1), apellido VARCHAR(40) NOT NULL CHECK (length(apellido) >= 1), correo VARCHAR(40) NOT NULL UNIQUE CHECK (length(correo) >= 5), contrasena VARCHAR(40) NOT NULL CHECK (length(contrasena) >= 8), registrado_en TIMESTAMP DEFAULT NOW());
+
+CREATE TABLE peliculas (id SERIAL PRIMARY KEY, nombre VARCHAR(150) NOT NULL, genero VARCHAR(50) NOT NULL, sala VARCHAR(30) NOT NULL CHECK (sala IN ('Sala 1-IMAX','Sala 2','Sala 3-4DX','Sala 4','Sala 5')), activo BOOLEAN DEFAULT TRUE, creado_en TIMESTAMP DEFAULT NOW());
+
+INSERT INTO peliculas (nombre, genero, sala) VALUES ('El Diablo Viste a la Moda 2', 'Comedia', 'Sala 1-IMAX'), ('The Mandalorian', 'Ciencia Ficcion', 'Sala 2'), ('Michael', 'Drama', 'Sala 3-4DX'), ('Scary Movie 6', 'Comedia / Terror', 'Sala 4'), ('Super Mario Galaxy', 'Animacion', 'Sala 5'), ('Hoppers', 'Aventura', 'Sala 2'), ('De Tal Palo Tal Astilla', 'Comedia', 'Sala 4');
+
+CREATE TABLE funciones (id SERIAL PRIMARY KEY, pelicula_id INT NOT NULL REFERENCES peliculas(id) ON DELETE CASCADE, fecha DATE NOT NULL, hora TIME NOT NULL, sala VARCHAR(30) NOT NULL CHECK (sala IN ('Sala 1-IMAX','Sala 2','Sala 3-4DX','Sala 4','Sala 5')), precio NUMERIC(6,2) NOT NULL CHECK (precio > 0), formato VARCHAR(20) NOT NULL CHECK (formato IN ('2D','3D','IMAX 3D','4DX')), creado_en TIMESTAMP DEFAULT NOW());
+
+CREATE TABLE asientos (id SERIAL PRIMARY KEY, funcion_id INT NOT NULL REFERENCES funciones(id) ON DELETE CASCADE, cliente_id INT REFERENCES clientes(id) ON DELETE SET NULL, fila VARCHAR(2) NOT NULL, numero INT NOT NULL, ocupado BOOLEAN DEFAULT FALSE, UNIQUE (funcion_id, fila, numero));
+
+CREATE TABLE comida (id SERIAL PRIMARY KEY, nombre VARCHAR(100) NOT NULL, precio NUMERIC(6,2) NOT NULL CHECK (precio > 0), disponible BOOLEAN DEFAULT TRUE);
+
+INSERT INTO comida (nombre, precio) VALUES ('Palomitas Grandes', 5.50), ('Palomitas Medianas', 3.50), ('Refresco Grande 32 oz', 4.00), ('Agua Mineral', 2.50), ('Nachos con Queso', 6.50), ('Hot Dog Premium', 5.00), ('Combo Duo', 13.00), ('M&M', 3.00), ('Dulces Surtidos', 2.50), ('Cafe Americano', 3.50), ('Helado en Vaso', 4.00), ('Combo Familiar', 28.00);
+
+CREATE TABLE carrito (id SERIAL PRIMARY KEY, cliente_id INT NOT NULL REFERENCES clientes(id) ON DELETE CASCADE, tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('boleto','comida')), funcion_id INT REFERENCES funciones(id) ON DELETE CASCADE, asiento_fila VARCHAR(2), asiento_num INT, comida_id INT REFERENCES comida(id) ON DELETE CASCADE, cantidad INT NOT NULL DEFAULT 1 CHECK (cantidad > 0), precio_unit NUMERIC(6,2) NOT NULL, agregado_en TIMESTAMP DEFAULT NOW());
+
+CREATE TABLE pagos (id SERIAL PRIMARY KEY, cliente_id INT NOT NULL REFERENCES clientes(id) ON DELETE CASCADE, metodo VARCHAR(30) NOT NULL CHECK (metodo IN ('Tarjeta de Credito','Tarjeta de Debito','Transferencia Bancaria')), titular VARCHAR(100), numero_tarjeta VARCHAR(19) CHECK (length(numero_tarjeta) <= 19), vencimiento VARCHAR(5) CHECK (vencimiento ~ '^\d{2}/\d{2}$'), cvv VARCHAR(3) CHECK (length(cvv) = 3), banco VARCHAR(50) CHECK (banco IN ('Banco Popular Dominicano','BHD Leon','Banreservas','Scotiabank','Banco Santa Cruz','Citibank')), num_referencia VARCHAR(100), fecha_transferencia VARCHAR(10) CHECK (fecha_transferencia ~ '^\d{2}/\d{2}/\d{4}$'), titular_transfer VARCHAR(100), total NUMERIC(8,2) NOT NULL, estado VARCHAR(20) DEFAULT 'confirmado' CHECK (estado IN ('confirmado','pendiente','cancelado')), pagado_en TIMESTAMP DEFAULT NOW());
+
+ALTER TABLE empleados ENABLE ROW LEVEL SECURITY;
+ALTER TABLE clientes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE peliculas ENABLE ROW LEVEL SECURITY;
+ALTER TABLE funciones ENABLE ROW LEVEL SECURITY;
+ALTER TABLE asientos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE comida ENABLE ROW LEVEL SECURITY;
+ALTER TABLE carrito ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pagos ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "empleados_solo_lectura" ON empleados FOR SELECT USING (true);
+
+CREATE POLICY "clientes_insertar" ON clientes FOR INSERT WITH CHECK (true);
+CREATE POLICY "clientes_ver_propio" ON clientes FOR SELECT USING (id::text = current_setting('app.cliente_id', true));
+CREATE POLICY "clientes_editar_propio" ON clientes FOR UPDATE USING (id::text = current_setting('app.cliente_id', true));
+
+CREATE POLICY "peliculas_ver_todos" ON peliculas FOR SELECT USING (true);
+CREATE POLICY "peliculas_empleados_insertar" ON peliculas FOR INSERT WITH CHECK (current_setting('app.rol', true) = 'empleado_ventas');
+CREATE POLICY "peliculas_empleados_editar" ON peliculas FOR UPDATE USING (current_setting('app.rol', true) = 'empleado_ventas');
+CREATE POLICY "peliculas_empleados_eliminar" ON peliculas FOR DELETE USING (current_setting('app.rol', true) = 'empleado_ventas');
+
+CREATE POLICY "funciones_ver_todos" ON funciones FOR SELECT USING (true);
+CREATE POLICY "funciones_empleados_insertar" ON funciones FOR INSERT WITH CHECK (current_setting('app.rol', true) = 'empleado_ventas');
+CREATE POLICY "funciones_empleados_editar" ON funciones FOR UPDATE USING (current_setting('app.rol', true) = 'empleado_ventas');
+CREATE POLICY "funciones_empleados_eliminar" ON funciones FOR DELETE USING (current_setting('app.rol', true) = 'empleado_ventas');
+
+CREATE POLICY "asientos_ver_todos" ON asientos FOR SELECT USING (true);
+CREATE POLICY "asientos_cliente_reservar" ON asientos FOR UPDATE USING (ocupado = false);
+
+CREATE POLICY "comida_ver_todos" ON comida FOR SELECT USING (true);
+
+CREATE POLICY "carrito_insertar" ON carrito FOR INSERT WITH CHECK (cliente_id::text = current_setting('app.cliente_id', true));
+CREATE POLICY "carrito_ver_propio" ON carrito FOR SELECT USING (cliente_id::text = current_setting('app.cliente_id', true));
+CREATE POLICY "carrito_eliminar_propio" ON carrito FOR DELETE USING (cliente_id::text = current_setting('app.cliente_id', true));
+
+CREATE POLICY "pagos_insertar" ON pagos FOR INSERT WITH CHECK (cliente_id::text = current_setting('app.cliente_id', true));
+CREATE POLICY "pagos_ver_propio" ON pagos FOR SELECT USING (cliente_id::text = current_setting('app.cliente_id', true));
