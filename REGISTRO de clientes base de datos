@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS clientes CASCADE;
+
+CREATE TABLE clientes (
+  id            SERIAL PRIMARY KEY,
+  nombre        VARCHAR(40)  NOT NULL,
+  apellido      VARCHAR(40)  NOT NULL,
+  correo        VARCHAR(40)  NOT NULL UNIQUE,
+  numero        VARCHAR(40)  NOT NULL,
+  contrasena    VARCHAR(40)  NOT NULL,
+  registrado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
