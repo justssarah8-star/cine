@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOVIORA CINES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --pink-bg:#FEE1E1;--coral-light:#EA816B;--brown-red:#AF4B35;--coral-dark:#D75D46;
+  --pink-soft:#ECBFBC;--red-logo:#E11919;--dark-gray:#474649;--petroleum-blue:#003A52;
+  --dark:#1A0A0A;--dark-2:#220D0D;--dark-3:#2E1010;--dark-4:#3A1515;
+  --text:#FEF0EF;--text-muted:#C09090;--green:#4CAF7D;--font:'Poppins',sans-serif;
+}
+*{scrollbar-width:thin;scrollbar-color:var(--coral-dark) var(--dark-2);}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--dark-2);}
+::-webkit-scrollbar-thumb{background:var(--coral-dark);border-radius:3px;}
+body{font-family:var(--font);background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden;}
+input::placeholder{color:rgba(255,255,255,0.2);}
+select option{background:var(--dark-3);color:var(--text);}
+.page{display:none;min-height:100vh;}.page.active{display:block;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(26,10,10,0.96);backdrop-filter:blur(24px);border-bottom:1px solid rgba(215,93,70,0.18);padding:0 2rem;}
+.nav-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:70px;}
+.nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer;}
+.logo-icon{width:44px;height:44px;background:var(--red-logo);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:#fff;letter-spacing:-1px;font-family:'Playfair Display',serif;}
+.logo-text{font-size:1.25rem;font-weight:700;letter-spacing:3px;color:var(--text);}
+.logo-text span{color:var(--coral-light);}
+.nav-links{display:flex;align-items:center;gap:0.1rem;}
+.nav-link{padding:0.45rem 0.9rem;font-size:0.8rem;font-weight:600;letter-spacing:0.8px;color:var(--text-muted);cursor:pointer;border-radius:6px;transition:all 0.2s;border:none;background:none;text-transform:uppercase;font-family:var(--font);}
+.nav-link:hover,.nav-link.active{color:var(--coral-light);background:rgba(234,129,107,0.1);}
+.nav-actions{display:flex;align-items:center;gap:0.7rem;}
+.btn-nav{padding:0.45rem 1.1rem;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:var(--font);letter-spacing:0.5px;}
+.btn-outline{border:1px solid rgba(215,93,70,0.45);background:transparent;color:var(--coral-light);}
+.btn-outline:hover{background:rgba(215,93,70,0.12);border-color:var(--coral-dark);}
+.btn-primary-nav{border:none;background:var(--red-logo);color:#fff;}
+.btn-primary-nav:hover{background:#C51515;}
+.cart-rel{position:relative;}
+.cart-badge{position:absolute;top:-7px;right:-7px;background:var(--petroleum-blue);color:#fff;border-radius:50%;width:18px;height:18px;font-size:0.62rem;font-weight:700;display:none;align-items:center;justify-content:center;}
+.nav-user-chip{display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0.9rem;background:rgba(215,93,70,0.1);border:1px solid rgba(215,93,70,0.25);border-radius:6px;cursor:pointer;}
+.nav-user-avatar{width:26px;height:26px;border-radius:50%;background:var(--red-logo);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.78rem;font-family:'Playfair Display',serif;}
+.nav-user-name{font-size:0.78rem;font-weight:600;color:var(--coral-light);}
+
+/* HERO */
+.hero{height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#1A0A0A 0%,#2E1010 40%,#003A52 100%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(215,93,70,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(215,93,70,0.05) 1px,transparent 1px);background-size:60px 60px;}
+.hero-glow-left{position:absolute;top:30%;left:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(225,25,25,0.12) 0%,transparent 70%);pointer-events:none;}
+.hero-glow-right{position:absolute;bottom:10%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,58,82,0.4) 0%,transparent 70%);pointer-events:none;}
+.hero-content{position:relative;text-align:center;max-width:900px;padding:2rem;animation:fadeUp 0.9s ease;}
+.hero-badge{display:inline-block;padding:0.35rem 1.4rem;border:1px solid rgba(236,191,188,0.35);border-radius:50px;font-size:0.72rem;font-weight:700;color:var(--pink-soft);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:1.8rem;background:rgba(236,191,188,0.06);}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,8vw,5.8rem);font-weight:900;line-height:1.05;margin-bottom:1.2rem;color:var(--text);}
+.hero-title .accent{color:var(--coral-light);}
+.hero-sub{font-size:1.05rem;color:var(--text-muted);max-width:480px;margin:0 auto 2.8rem;line-height:1.75;}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.btn-hero-main{padding:0.95rem 2.6rem;border:none;background:var(--red-logo);color:#fff;font-weight:700;font-size:0.95rem;border-radius:8px;cursor:pointer;font-family:var(--font);letter-spacing:0.5px;transition:all 0.25s;}
+.btn-hero-main:hover{background:#C51515;transform:translateY(-2px);}
+.btn-hero-sec{padding:0.95rem 2.6rem;border:1px solid rgba(236,191,188,0.25);background:rgba(236,191,188,0.04);color:var(--pink-soft);font-weight:600;font-size:0.95rem;border-radius:8px;cursor:pointer;font-family:var(--font);transition:all 0.25s;}
+.btn-hero-sec:hover{border-color:var(--coral-light);color:var(--coral-light);}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;animation:bounce 2s infinite;}
+.scroll-line{width:1px;height:36px;background:linear-gradient(to bottom,transparent,var(--coral-dark),transparent);}
+
+/* WELCOME */
+.welcome-banner{background:linear-gradient(135deg,rgba(215,93,70,0.12),rgba(254,225,225,0.04));border:1px solid rgba(215,93,70,0.25);border-radius:12px;padding:1.5rem 2rem;margin-bottom:2rem;display:none;align-items:center;justify-content:space-between;}
+.welcome-text{font-size:1.4rem;font-weight:800;letter-spacing:1px;}
+.welcome-text span{color:var(--coral-light);}
+.welcome-sub{font-size:0.85rem;color:var(--text-muted);margin-top:0.3rem;}
+.welcome-icon{width:52px;height:52px;background:var(--red-logo);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;font-size:22px;color:#fff;}
+
+/* QUICK */
+.quick-inner{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;}
+.quick-card{display:flex;flex-direction:column;align-items:center;gap:0.6rem;padding:1.4rem 1rem;border-radius:10px;cursor:pointer;transition:all 0.22s;border:1px solid rgba(215,93,70,0.1);background:rgba(255,255,255,0.02);}
+.quick-card:hover{background:rgba(215,93,70,0.08);border-color:rgba(215,93,70,0.3);transform:translateY(-4px);}
+.quick-icon-box{width:40px;height:40px;border-radius:8px;background:rgba(215,93,70,0.15);display:flex;align-items:center;justify-content:center;}
+.quick-icon-svg{width:20px;height:20px;stroke:var(--coral-light);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.quick-label{font-size:0.75rem;font-weight:700;letter-spacing:0.8px;color:var(--text-muted);text-transform:uppercase;}
+
+/* SECTION */
+.section{padding:5rem 2rem;max-width:1440px;margin:0 auto;}
+.section-tag{display:inline-block;font-size:0.7rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--coral-light);margin-bottom:0.7rem;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;line-height:1.2;color:var(--text);}
+.section-sub{font-size:0.9rem;color:var(--text-muted);margin-top:0.5rem;}
+
+/* MOVIES */
+.movies-filter{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem;}
+.filter-btn{padding:0.4rem 1.1rem;border-radius:50px;font-size:0.78rem;font-weight:600;cursor:pointer;border:1px solid rgba(215,93,70,0.22);background:transparent;color:var(--text-muted);font-family:var(--font);transition:all 0.2s;}
+.filter-btn.active,.filter-btn:hover{background:var(--coral-dark);border-color:var(--coral-dark);color:#fff;}
+.movies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.5rem;}
+.movie-card{border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.3s;background:var(--dark-3);border:1px solid rgba(215,93,70,0.08);position:relative;}
+.movie-card:hover{transform:translateY(-7px);border-color:rgba(215,93,70,0.4);box-shadow:0 24px 50px rgba(0,0,0,0.5);}
+.movie-poster{width:100%;aspect-ratio:2/3;display:block;object-fit:cover;}
+.movie-poster-bg{width:100%;aspect-ratio:2/3;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.movie-poster-title{position:absolute;bottom:0;left:0;right:0;padding:1.5rem 1rem 1rem;background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;line-height:1.25;color:#fff;}
+.movie-badge{position:absolute;top:10px;left:10px;padding:0.22rem 0.65rem;border-radius:4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;}
+.badge-hot{background:var(--red-logo);color:#fff;}.badge-new{background:var(--petroleum-blue);color:#fff;}.badge-soon{background:var(--brown-red);color:#fff;}
+.movie-info{padding:1rem;}
+.movie-title-card{font-size:0.9rem;font-weight:700;margin-bottom:0.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);}
+.movie-meta{font-size:0.76rem;color:var(--text-muted);display:flex;gap:0.7rem;align-items:center;flex-wrap:wrap;}
+.movie-rating{color:var(--coral-light);font-weight:700;}
+.movie-genre-tag{background:rgba(215,93,70,0.12);color:var(--coral-light);padding:0.18rem 0.55rem;border-radius:4px;font-size:0.68rem;font-weight:700;}
+.movie-actions{display:flex;gap:0.5rem;margin-top:0.8rem;}
+.btn-sm{flex:1;padding:0.5rem;border-radius:6px;font-size:0.76rem;font-weight:700;cursor:pointer;font-family:var(--font);transition:all 0.2s;letter-spacing:0.3px;}
+.btn-sm-primary{background:var(--red-logo);color:#fff;border:none;}.btn-sm-primary:hover{background:#C51515;}
+.btn-sm-outline{background:transparent;border:1px solid rgba(215,93,70,0.25);color:var(--text-muted);}
+.btn-sm-outline:hover{border-color:var(--coral-dark);color:var(--coral-light);}
+
+/* DULCERIA */
+.dulceria-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem;}
+.dulce-card{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.08);transition:all 0.28s;overflow:hidden;}
+.dulce-card:hover{transform:translateY(-4px);border-color:rgba(215,93,70,0.3);}
+.dulce-img-box{width:100%;height:150px;background:var(--dark-4);display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(215,93,70,0.08);}
+.dulce-img-label{font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);}
+.dulce-info{padding:1rem;}
+.dulce-name{font-weight:700;font-size:0.93rem;margin-bottom:0.3rem;color:var(--text);}
+.dulce-desc{font-size:0.77rem;color:var(--text-muted);line-height:1.5;margin-bottom:0.8rem;}
+.dulce-footer{display:flex;align-items:center;justify-content:space-between;}
+.dulce-price{font-size:1.1rem;font-weight:800;color:var(--coral-light);}
+.add-btn{width:34px;height:34px;border-radius:7px;border:none;background:var(--coral-dark);color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;transition:all 0.2s;font-family:var(--font);}
+.add-btn:hover{background:var(--red-logo);transform:scale(1.1);}
+
+/* LOCATIONS */
+.country-section{margin-bottom:3.5rem;}
+.country-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid rgba(215,93,70,0.12);}
+.country-name{font-size:1.2rem;font-weight:800;letter-spacing:1px;color:var(--text);}
+.country-count{font-size:0.78rem;color:var(--text-muted);margin-left:auto;background:rgba(215,93,70,0.1);padding:0.25rem 0.7rem;border-radius:50px;}
+.branches-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+.branch-card{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.08);transition:all 0.28s;overflow:hidden;}
+.branch-card:hover{transform:translateY(-4px);border-color:rgba(215,93,70,0.3);}
+.branch-header{padding:1.2rem 1.4rem 0.8rem;background:linear-gradient(135deg,rgba(215,93,70,0.1),rgba(0,58,82,0.15));border-bottom:1px solid rgba(215,93,70,0.1);}
+.branch-city{font-size:1.1rem;font-weight:800;color:var(--coral-light);margin-bottom:0.2rem;}
+.branch-salas{font-size:0.75rem;color:var(--text-muted);font-weight:600;}
+.branch-body{padding:1rem 1.4rem;}
+.branch-detail{display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.5rem;font-size:0.81rem;color:var(--text-muted);}
+.branch-detail-label{font-weight:700;color:var(--pink-soft);min-width:60px;flex-shrink:0;}
+.branch-actions{display:flex;gap:0.5rem;padding:0.8rem 1.4rem 1.2rem;}
+
+/* PROMOS */
+.promos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;}
+.promo-card{background:var(--dark-3);border-radius:12px;padding:1.8rem;border:1px solid rgba(215,93,70,0.08);transition:all 0.28s;position:relative;overflow:hidden;}
+.promo-card:hover{transform:translateY(-5px);border-color:rgba(215,93,70,0.3);}
+.promo-accent{position:absolute;top:0;left:0;width:4px;height:100%;background:var(--coral-dark);}
+.promo-tag{display:inline-block;padding:0.22rem 0.75rem;border-radius:4px;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;}
+.promo-tag-a{background:rgba(215,93,70,0.15);color:var(--coral-light);}
+.promo-tag-b{background:rgba(0,58,82,0.35);color:#7EC8E3;}
+.promo-tag-c{background:rgba(175,75,53,0.2);color:var(--pink-soft);}
+.promo-title{font-size:1.15rem;font-weight:800;margin-bottom:0.5rem;color:var(--text);}
+.promo-desc{font-size:0.83rem;color:var(--text-muted);line-height:1.65;margin-bottom:1.1rem;}
+.promo-code-row{display:flex;align-items:center;gap:0.5rem;background:rgba(215,93,70,0.06);border:1px dashed rgba(215,93,70,0.3);border-radius:7px;padding:0.55rem 0.9rem;}
+.promo-code-val{font-weight:800;color:var(--coral-light);letter-spacing:2px;flex:1;font-size:0.85rem;}
+.copy-btn{background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:0.75rem;font-family:var(--font);padding:0.2rem 0.5rem;border-radius:4px;transition:all 0.2s;font-weight:600;}
+.copy-btn:hover{color:var(--coral-light);}
+
+/* CARRITO */
+.cart-layout{display:grid;grid-template-columns:1fr 370px;gap:2rem;align-items:start;}
+.cart-items-box{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.08);overflow:hidden;}
+.cart-item{display:flex;gap:1rem;padding:1.2rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.04);}
+.cart-item:last-child{border-bottom:none;}
+.cart-item-poster{width:58px;height:84px;border-radius:7px;background:var(--dark-4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:var(--text-muted);text-align:center;letter-spacing:1px;text-transform:uppercase;padding:4px;border:1px solid rgba(215,93,70,0.1);}
+.cart-item-info{flex:1;}
+.cart-item-title{font-weight:700;margin-bottom:0.25rem;font-size:0.9rem;}
+.cart-item-sub{font-size:0.78rem;color:var(--text-muted);}
+.cart-item-price{font-weight:800;color:var(--coral-light);margin-top:0.4rem;font-size:0.9rem;}
+.remove-btn{background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:1rem;padding:0.3rem;border-radius:4px;transition:color 0.2s;align-self:flex-start;}
+.remove-btn:hover{color:var(--red-logo);}
+.cart-summary-box{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.08);padding:1.6rem;position:sticky;top:90px;}
+.summary-title{font-size:1rem;font-weight:800;margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.06);letter-spacing:0.5px;}
+.summary-row{display:flex;justify-content:space-between;font-size:0.85rem;color:var(--text-muted);margin-bottom:0.65rem;}
+.summary-total{display:flex;justify-content:space-between;font-weight:800;font-size:1.1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06);margin-top:0.5rem;}
+.summary-total span:last-child{color:var(--coral-light);}
+
+/* PAGO */
+.payment-layout{display:grid;grid-template-columns:1fr 360px;gap:2rem;align-items:start;}
+.payment-form-box{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.08);padding:2rem;}
+.pay-methods{display:flex;gap:0.8rem;margin-bottom:2rem;}
+.pay-method{flex:1;padding:0.9rem 0.5rem;border-radius:8px;border:1px solid rgba(215,93,70,0.15);cursor:pointer;text-align:center;font-size:0.78rem;font-weight:700;color:var(--text-muted);transition:all 0.2s;letter-spacing:0.5px;text-transform:uppercase;}
+.pay-method.active{border-color:var(--coral-dark);color:var(--coral-light);background:rgba(215,93,70,0.07);}
+.pay-method-label{display:block;font-size:0.68rem;margin-top:0.3rem;}
+.form-group{margin-bottom:1.2rem;}
+.form-label{display:block;font-size:0.72rem;font-weight:700;color:var(--text-muted);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.8px;}
+.form-input{width:100%;background:var(--dark-4);border:1px solid rgba(215,93,70,0.15);border-radius:8px;padding:0.75rem 1rem;color:var(--text);font-family:var(--font);font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--coral-dark);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-select{width:100%;background:var(--dark-4);border:1px solid rgba(215,93,70,0.15);border-radius:8px;padding:0.75rem 1rem;color:var(--text);font-family:var(--font);font-size:0.88rem;outline:none;cursor:pointer;}
+.btn-full{width:100%;padding:0.9rem;border:none;background:var(--red-logo);color:#fff;font-weight:700;font-size:0.95rem;border-radius:8px;cursor:pointer;font-family:var(--font);letter-spacing:0.5px;transition:all 0.2s;margin-top:0.8rem;}
+.btn-full:hover{background:#C51515;}
+.btn-full-outline{width:100%;padding:0.9rem;border:1px solid rgba(215,93,70,0.25);background:transparent;color:var(--text-muted);font-weight:600;font-size:0.88rem;border-radius:8px;cursor:pointer;font-family:var(--font);transition:all 0.2s;margin-top:0.5rem;}
+.btn-full-outline:hover{border-color:var(--coral-dark);color:var(--coral-light);}
+
+/* COMPRAS */
+.purchases-list{display:flex;flex-direction:column;gap:1rem;}
+.purchase-card{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.08);padding:1.5rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.5rem;align-items:center;}
+.purchase-poster{width:54px;height:78px;background:var(--dark-4);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:700;color:var(--text-muted);text-align:center;padding:4px;letter-spacing:0.5px;text-transform:uppercase;border:1px solid rgba(215,93,70,0.1);}
+.purchase-title{font-weight:700;margin-bottom:0.3rem;font-size:0.92rem;}
+.purchase-sub{font-size:0.79rem;color:var(--text-muted);}
+.status-badge{display:inline-block;padding:0.28rem 0.75rem;border-radius:50px;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.status-confirmed{background:rgba(76,175,125,0.15);color:#6FD0A4;}
+.status-pending{background:rgba(215,93,70,0.15);color:var(--coral-light);}
+.purchase-price{font-size:1.15rem;font-weight:800;color:var(--coral-light);margin-top:0.3rem;}
+
+/* LOGIN */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:var(--dark);position:relative;}
+.login-bg-grad{position:fixed;inset:0;background:linear-gradient(160deg,#1A0A0A 0%,#2E1010 50%,#003A52 100%);z-index:0;}
+.login-glow{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(215,93,70,0.09) 0%,transparent 70%);pointer-events:none;z-index:0;}
+.login-card{position:relative;z-index:1;background:var(--dark-2);border:1px solid rgba(215,93,70,0.18);border-radius:16px;padding:2.8rem;width:100%;max-width:480px;animation:fadeUp 0.5s ease;}
+.login-logo-wrap{text-align:center;margin-bottom:2rem;}
+.login-logo-icon{width:54px;height:54px;background:var(--red-logo);border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#fff;margin:0 auto 0.8rem;font-family:'Playfair Display',serif;}
+.login-logo-name{font-size:1.35rem;font-weight:700;letter-spacing:3px;color:var(--text);}
+.login-logo-name span{color:var(--coral-light);}
+.login-logo-sub{font-size:0.8rem;color:var(--text-muted);margin-top:0.3rem;}
+.tab-switcher{display:flex;background:var(--dark-3);border-radius:8px;padding:4px;margin-bottom:2rem;}
+.tab-btn{flex:1;padding:0.55rem;border-radius:6px;border:none;background:transparent;color:var(--text-muted);font-family:var(--font);font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
+.tab-btn.active{background:var(--coral-dark);color:#fff;}
+.login-title{font-size:1.4rem;font-weight:800;margin-bottom:0.3rem;}
+.login-desc{font-size:0.85rem;color:var(--text-muted);margin-bottom:1.8rem;}
+
+/* DEMO USERS */
+.demo-users-box{background:rgba(215,93,70,0.05);border:1px solid rgba(215,93,70,0.2);border-radius:10px;padding:1rem;margin-bottom:1.5rem;}
+.demo-users-title{font-size:0.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--coral-light);margin-bottom:0.8rem;}
+.demo-user-btn{width:100%;display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.8rem;border:1px solid rgba(215,93,70,0.15);border-radius:8px;background:rgba(255,255,255,0.02);cursor:pointer;margin-bottom:0.5rem;transition:all 0.18s;font-family:var(--font);}
+.demo-user-btn:last-child{margin-bottom:0;}
+.demo-user-btn:hover{border-color:var(--coral-dark);background:rgba(215,93,70,0.08);}
+.demo-avatar{width:32px;height:32px;border-radius:50%;background:var(--red-logo);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;font-family:'Playfair Display',serif;color:#fff;flex-shrink:0;}
+.demo-name{font-size:0.82rem;font-weight:700;color:var(--text);}
+.demo-email{font-size:0.7rem;color:var(--text-muted);}
+.demo-pass{font-size:0.68rem;color:var(--coral-light);margin-top:1px;}
+.divider-row{display:flex;align-items:center;gap:1rem;margin:1.2rem 0;}
+.divider-line{flex:1;height:1px;background:rgba(255,255,255,0.07);}
+.divider-text{font-size:0.75rem;color:var(--text-muted);}
+.role-select{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:1.4rem;}
+.role-option{padding:0.8rem 0.5rem;border:1px solid rgba(215,93,70,0.15);border-radius:8px;cursor:pointer;text-align:center;font-size:0.78rem;font-weight:700;color:var(--text-muted);transition:all 0.2s;letter-spacing:0.3px;}
+.role-option.active,.role-option:hover{border-color:var(--coral-dark);color:var(--coral-light);background:rgba(215,93,70,0.07);}
+.role-label{display:block;font-size:0.72rem;margin-top:0.2rem;}
+
+/* PANEL */
+.emp-layout{display:grid;grid-template-columns:250px 1fr;min-height:100vh;}
+.emp-sidebar{background:var(--dark-2);border-right:1px solid rgba(215,93,70,0.1);position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.5rem 0;display:flex;flex-direction:column;}
+.emp-sidebar-logo{padding:0 1.4rem 1.4rem;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:1rem;}
+.emp-nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.4rem;cursor:pointer;transition:all 0.2s;font-size:0.82rem;font-weight:600;color:var(--text-muted);letter-spacing:0.3px;}
+.emp-nav-item:hover,.emp-nav-item.active{color:var(--coral-light);background:rgba(215,93,70,0.08);}
+.emp-nav-item.active{border-right:2px solid var(--coral-dark);}
+.emp-nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(215,93,70,0.3);flex-shrink:0;}
+.emp-nav-item.active .emp-nav-dot{background:var(--coral-dark);}
+.emp-nav-section{padding:0.5rem 1.4rem 0.3rem;font-size:0.62rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.18);margin-top:0.5rem;}
+.emp-content{background:var(--dark);padding:2rem;}
+.emp-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;}
+.emp-title{font-size:1.5rem;font-weight:800;color:var(--text);}
+.emp-subtitle{font-size:0.82rem;color:var(--text-muted);margin-top:0.2rem;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;margin-bottom:2rem;}
+.stat-card{background:var(--dark-2);border-radius:10px;padding:1.3rem;border:1px solid rgba(215,93,70,0.08);}
+.stat-label{font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.5rem;}
+.stat-value{font-size:1.9rem;font-weight:800;color:var(--coral-light);}
+.stat-change{font-size:0.75rem;color:var(--green);margin-top:0.2rem;font-weight:600;}
+.table-wrap{background:var(--dark-2);border-radius:10px;border:1px solid rgba(215,93,70,0.08);overflow:hidden;}
+.table-header{padding:1.1rem 1.5rem;border-bottom:1px solid rgba(215,93,70,0.08);display:flex;align-items:center;justify-content:space-between;}
+.table-title{font-weight:800;font-size:0.9rem;letter-spacing:0.3px;}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;padding:0.75rem 1.5rem;font-size:0.68rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid rgba(215,93,70,0.06);}
+td{padding:0.9rem 1.5rem;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.03);color:var(--text);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(215,93,70,0.03);}
+.hall-status{display:inline-block;padding:0.22rem 0.65rem;border-radius:50px;font-size:0.68rem;font-weight:700;}
+.hall-available{background:rgba(76,175,125,0.12);color:#6FD0A4;}
+.hall-full{background:rgba(225,25,25,0.12);color:#F87171;}
+.hall-almost{background:rgba(215,93,70,0.12);color:var(--coral-light);}
+.progress-bar{height:5px;border-radius:3px;background:rgba(255,255,255,0.06);overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;}
+
+/* SEAT MAP */
+.seat-legend{display:flex;gap:1.4rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:0.5rem;font-size:0.76rem;color:var(--text-muted);}
+.seat-dot{width:13px;height:13px;border-radius:2px;}
+.seat-dot-free{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);}
+.seat-dot-taken{background:#333;border:1px solid #2a2a2a;}
+.seat-dot-selected{background:var(--coral-dark);border:1px solid var(--brown-red);}
+.screen{width:75%;margin:0 auto 2rem;text-align:center;background:linear-gradient(to bottom,rgba(215,93,70,0.18),transparent);padding:0.45rem;border-radius:4px 4px 0 0;font-size:0.7rem;color:var(--coral-light);letter-spacing:3px;font-weight:700;}
+.seats-container{display:flex;flex-direction:column;gap:6px;align-items:center;}
+.seat-row{display:flex;align-items:center;gap:5px;}
+.row-label{width:18px;text-align:center;font-size:0.65rem;color:var(--text-muted);font-weight:600;}
+.seat{width:26px;height:22px;border-radius:3px 3px 0 0;cursor:pointer;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);transition:all 0.14s;}
+.seat.taken{background:#232323;border-color:#2a2a2a;cursor:not-allowed;}
+.seat.selected{background:var(--coral-dark);border-color:var(--brown-red);}
+.seat:hover:not(.taken){background:rgba(215,93,70,0.35);border-color:var(--coral-dark);}
+.seat-gap{width:14px;}
+
+/* SPOTY */
+.spoty-btn{position:fixed;bottom:2rem;right:2rem;z-index:999;width:58px;height:58px;border-radius:50%;background:var(--petroleum-blue);border:2px solid rgba(0,58,82,0.8);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,58,82,0.5);transition:all 0.3s;}
+.spoty-btn:hover{transform:scale(1.1);}
+.spoty-panel{position:fixed;bottom:5.5rem;right:2rem;z-index:998;width:350px;background:var(--dark-2);border:1px solid rgba(0,58,82,0.5);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.7);display:none;flex-direction:column;overflow:hidden;max-height:500px;}
+.spoty-panel.open{display:flex;}
+.spoty-header{padding:0.9rem 1.2rem;background:var(--petroleum-blue);display:flex;align-items:center;gap:0.8rem;}
+.spoty-avatar{width:36px;height:36px;border-radius:50%;background:var(--pink-soft);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:var(--petroleum-blue);}
+.spoty-name{font-weight:800;font-size:0.9rem;color:#fff;}
+.spoty-status{font-size:0.7rem;color:var(--pink-soft);}
+.close-spoty{margin-left:auto;background:transparent;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:1.1rem;font-family:var(--font);padding:0.2rem 0.4rem;}
+.close-spoty:hover{color:#fff;}
+.spoty-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.75rem;}
+.spoty-msg{max-width:86%;padding:0.65rem 0.9rem;border-radius:10px;font-size:0.8rem;line-height:1.5;}
+.spoty-msg.bot{background:var(--dark-3);border-radius:4px 10px 10px 10px;color:var(--text);}
+.spoty-msg.user{background:rgba(0,58,82,0.5);border:1px solid rgba(0,58,82,0.7);border-radius:10px 4px 10px 10px;align-self:flex-end;color:var(--text);}
+.spoty-typing{align-self:flex-start;}
+.typing-dots{display:flex;gap:4px;padding:0.6rem 0.9rem;background:var(--dark-3);border-radius:4px 10px 10px 10px;}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--coral-dark);animation:typeBounce 1.2s infinite;}
+.typing-dot:nth-child(2){animation-delay:0.2s;}
+.typing-dot:nth-child(3){animation-delay:0.4s;}
+.spoty-chips{display:flex;flex-wrap:wrap;gap:0.4rem;padding:0 0.8rem 0.5rem;}
+.spoty-chip{padding:0.3rem 0.75rem;border-radius:50px;border:1px solid rgba(0,58,82,0.5);background:rgba(0,58,82,0.2);color:var(--pink-soft);font-size:0.72rem;cursor:pointer;font-family:var(--font);font-weight:600;transition:all 0.2s;}
+.spoty-chip:hover{background:var(--petroleum-blue);color:#fff;}
+.spoty-input{display:flex;gap:0.5rem;padding:0.75rem 0.9rem;border-top:1px solid rgba(255,255,255,0.05);}
+.spoty-input input{flex:1;background:var(--dark-3);border:1px solid rgba(0,58,82,0.4);border-radius:7px;padding:0.48rem 0.8rem;color:var(--text);font-family:var(--font);font-size:0.8rem;outline:none;}
+.spoty-send{width:32px;height:32px;border-radius:7px;border:none;background:var(--petroleum-blue);color:#fff;cursor:pointer;font-weight:700;font-size:0.9rem;display:flex;align-items:center;justify-content:center;}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(5px);}
+.modal{background:var(--dark-2);border:1px solid rgba(215,93,70,0.2);border-radius:16px;width:100%;max-width:620px;max-height:90vh;overflow-y:auto;animation:fadeUp 0.3s ease;}
+.modal-header{padding:1.4rem 1.6rem;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:1.1rem;font-weight:800;color:var(--text);}
+.close-modal{background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:1.4rem;line-height:1;}
+.close-modal:hover{color:var(--text);}
+.modal-body{padding:1.6rem;}
+
+/* TICKET */
+.ticket{background:var(--dark-3);border-radius:12px;border:1px solid rgba(215,93,70,0.25);overflow:hidden;}
+.ticket-top{background:linear-gradient(135deg,rgba(215,93,70,0.15),rgba(0,58,82,0.2));padding:1.5rem;display:flex;align-items:flex-start;justify-content:space-between;}
+.ticket-movie-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--text);}
+.ticket-cinema-name{font-size:0.78rem;color:var(--coral-light);margin-top:0.3rem;font-weight:600;}
+.ticket-id{font-size:0.72rem;color:var(--text-muted);text-align:right;}
+.ticket-divider{border:none;border-top:2px dashed rgba(215,93,70,0.2);}
+.ticket-body{padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.ticket-field label{font-size:0.65rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);display:block;margin-bottom:0.2rem;font-weight:700;}
+.ticket-field span{font-size:0.92rem;font-weight:700;color:var(--text);}
+.ticket-barcode{padding:1rem 1.5rem;text-align:center;border-top:2px dashed rgba(215,93,70,0.2);}
+.barcode-lines{display:flex;gap:2px;justify-content:center;margin-bottom:0.5rem;}
+.barcode-line{width:2px;background:var(--text);opacity:0.7;}
+.barcode-line.wide{width:4px;}
+.barcode-num{font-size:0.7rem;color:var(--text-muted);letter-spacing:4px;}
+
+/* NOTIFICATION */
+.notification{position:fixed;top:90px;right:1.5rem;z-index:3000;background:var(--dark-2);border:1px solid rgba(215,93,70,0.35);border-radius:10px;padding:0.9rem 1.2rem;min-width:270px;animation:slideIn 0.3s ease;box-shadow:0 8px 30px rgba(0,0,0,0.5);border-left:3px solid var(--coral-dark);}
+.notif-text{font-weight:600;font-size:0.85rem;color:var(--text);}
+.error-msg{background:rgba(225,25,25,0.1);border:1px solid rgba(225,25,25,0.25);border-radius:8px;padding:0.75rem 1rem;font-size:0.82rem;color:#F87171;margin-bottom:1rem;display:none;}
+.loading-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:8px;vertical-align:middle;}
+
+/* FOOTER */
+footer{background:var(--dark-2);border-top:1px solid rgba(215,93,70,0.1);padding:3rem 2rem 1.5rem;}
+.footer-inner{max-width:1440px;margin:0 auto;}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2.5rem;}
+.footer-brand p{font-size:0.82rem;color:var(--text-muted);line-height:1.75;margin-top:0.8rem;max-width:260px;}
+.footer-col h4{font-weight:800;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:1rem;text-transform:uppercase;color:var(--pink-soft);}
+.footer-col a{display:block;font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem;cursor:pointer;transition:color 0.2s;}
+.footer-col a:hover{color:var(--coral-light);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.05);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:0.75rem;color:var(--text-muted);}
+.footer-social{display:flex;gap:0.7rem;}
+.social-icon{width:34px;height:34px;border-radius:7px;border:1px solid rgba(215,93,70,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;color:var(--text-muted);font-size:0.72rem;font-weight:700;}
+.social-icon:hover{border-color:var(--coral-dark);color:var(--coral-light);}
+.db-badge{display:inline-block;padding:0.2rem 0.6rem;background:rgba(76,175,125,0.15);border:1px solid rgba(76,175,125,0.3);border-radius:20px;font-size:0.65rem;font-weight:700;color:#6FD0A4;letter-spacing:0.5px;margin-left:0.5rem;vertical-align:middle;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideIn{from{opacity:0;transform:translateX(22px);}to{opacity:1;transform:translateX(0);}}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(7px);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes typeBounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+@media(max-width:900px){.cart-layout,.payment-layout{grid-template-columns:1fr;}.emp-layout{grid-template-columns:1fr;}.emp-sidebar{position:relative;height:auto;}.footer-top{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.footer-top{grid-template-columns:1fr;}.hero-btns{flex-direction:column;align-items:center;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="showPage('home')">
+      <div class="logo-icon">M</div>
+      <span class="logo-text">MOVIORA <span>CINES</span></span>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link active" onclick="showPage('home',this)">Inicio</button>
+      <button class="nav-link" onclick="showPage('cartelera',this)">Cartelera</button>
+      <button class="nav-link" onclick="showPage('dulceria',this)">Dulceria</button>
+      <button class="nav-link" onclick="showPage('promociones',this)">Promociones</button>
+      <button class="nav-link" onclick="showPage('locations',this)">Locations</button>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-nav btn-outline cart-rel" onclick="showPage('carrito')">
+        Carrito
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+      <div id="navGuest" style="display:flex;gap:0.5rem;">
+        <button class="btn-nav btn-outline" onclick="showPage('login')">Ingresar</button>
+        <button class="btn-nav btn-primary-nav" onclick="showPage('registro')">Registro</button>
+      </div>
+      <div id="navUser" style="display:none;">
+        <div class="nav-user-chip" onclick="showPage('compras')">
+          <div class="nav-user-avatar" id="navUserAvatar">?</div>
+          <span class="nav-user-name" id="navUserName">Cliente</span>
+        </div>
+        <button class="btn-nav btn-outline" onclick="cerrarSesion()" style="margin-left:0.5rem;">Salir</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-glow-left"></div>
+    <div class="hero-glow-right"></div>
+    <div class="hero-content">
+      <div class="hero-badge">Experiencia Cinematografica Premium</div>
+      <h1 class="hero-title">VIVE EL CINE<br><span class="accent">COMO NUNCA</span></h1>
+      <p class="hero-sub">La cadena de cines mas moderna. Tecnologia de punta, comodidad sin igual y las mejores peliculas del momento.</p>
+      <div class="hero-btns">
+        <button class="btn-hero-main" onclick="showPage('cartelera')">Ver Cartelera</button>
+        <button class="btn-hero-sec" onclick="showPage('locations')">Nuestras Sucursales</button>
+      </div>
+    </div>
+    <div class="hero-scroll"><div class="scroll-line"></div>SCROLL</div>
+  </div>
+
+  <div style="background:var(--dark-2);padding:3rem 2rem;border-top:1px solid rgba(215,93,70,0.1);border-bottom:1px solid rgba(215,93,70,0.1);">
+    <div style="max-width:1440px;margin:0 auto;">
+      <div class="welcome-banner" id="welcomeBanner">
+        <div>
+          <div class="welcome-text">BIENVENIDO A <span>MOVIORA CINES</span></div>
+          <div class="welcome-sub" id="welcomeUserName">Es un placer tenerte de vuelta</div>
+        </div>
+        <div class="welcome-icon">M</div>
+      </div>
+      <div class="quick-inner">
+        <div class="quick-card" onclick="showPage('cartelera')">
+          <div class="quick-icon-box"><svg class="quick-icon-svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="16 2 12 7 8 2"/></svg></div>
+          <span class="quick-label">Cartelera</span>
+        </div>
+        <div class="quick-card" onclick="showPage('dulceria')">
+          <div class="quick-icon-box"><svg class="quick-icon-svg" viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></div>
+          <span class="quick-label">Dulceria</span>
+        </div>
+        <div class="quick-card" onclick="showPage('carrito')">
+          <div class="quick-icon-box"><svg class="quick-icon-svg" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+          <span class="quick-label">Carrito</span>
+        </div>
+        <div class="quick-card" onclick="showPage('compras')">
+          <div class="quick-icon-box"><svg class="quick-icon-svg" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+          <span class="quick-label">Mis Compras</span>
+        </div>
+        <div class="quick-card" onclick="showPage('locations')">
+          <div class="quick-icon-box"><svg class="quick-icon-svg" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <span class="quick-label">Locations</span>
+        </div>
+        <div class="quick-card" onclick="showPage('promociones')">
+          <div class="quick-icon-box"><svg class="quick-icon-svg" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+          <span class="quick-label">Promociones</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div style="margin-bottom:2.5rem;">
+      <div class="section-tag">En cartelera ahora</div>
+      <h2 class="section-title">Peliculas Destacadas <span class="db-badge">LIVE DB</span></h2>
+      <p class="section-sub">Cargado directamente desde Supabase en tiempo real</p>
+    </div>
+    <div class="movies-grid" id="homeMovies">
+      <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);">
+        <div class="loading-spinner"></div> Cargando peliculas desde Supabase...
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2.5rem;">
+      <button class="btn-hero-sec" onclick="showPage('cartelera')">Ver toda la cartelera</button>
+    </div>
+  </div>
+
+  <div style="background:var(--dark-2);padding:4rem 2rem;border-top:1px solid rgba(215,93,70,0.1);">
+    <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:2rem;text-align:center;">
+      <div><div style="font-size:2.6rem;font-weight:900;color:var(--coral-light);font-family:'Playfair Display',serif;">25+</div><div style="color:var(--text-muted);font-size:0.85rem;margin-top:0.3rem;">Sucursales Globales</div></div>
+      <div><div style="font-size:2.6rem;font-weight:900;color:var(--coral-light);font-family:'Playfair Display',serif;">500K+</div><div style="color:var(--text-muted);font-size:0.85rem;margin-top:0.3rem;">Clientes Satisfechos</div></div>
+      <div><div style="font-size:2.6rem;font-weight:900;color:var(--coral-light);font-family:'Playfair Display',serif;">150+</div><div style="color:var(--text-muted);font-size:0.85rem;margin-top:0.3rem;">Peliculas al Mes</div></div>
+      <div><div style="font-size:2.6rem;font-weight:900;color:var(--coral-light);font-family:'Playfair Display',serif;">12</div><div style="color:var(--text-muted);font-size:0.85rem;margin-top:0.3rem;">Paises Presentes</div></div>
+    </div>
+  </div>
+  <div id="mainFooter"></div>
+</div>
+
+<!-- CARTELERA -->
+<div id="page-cartelera" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;">
+        <div class="section-tag">Programacion</div>
+        <h1 class="section-title" style="margin-top:0.3rem;">Cartelera <span class="db-badge">SUPABASE LIVE</span></h1>
+        <p class="section-sub" style="margin-top:0.5rem;">Peliculas y funciones en tiempo real</p>
+      </div>
+    </div>
+    <div class="section">
+      <div class="movies-filter">
+        <button class="filter-btn active" onclick="filterMovies('all',this)">Todas</button>
+        <button class="filter-btn" onclick="filterMovies('Comedia',this)">Comedia</button>
+        <button class="filter-btn" onclick="filterMovies('Comedia / Terror',this)">Terror</button>
+        <button class="filter-btn" onclick="filterMovies('Ciencia Ficcion',this)">Accion</button>
+        <button class="filter-btn" onclick="filterMovies('Animacion',this)">Animacion</button>
+        <button class="filter-btn" onclick="filterMovies('Drama',this)">Drama</button>
+      </div>
+      <div class="movies-grid" id="cartelera-grid">
+        <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);">
+          <div class="loading-spinner"></div> Cargando desde Supabase...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DULCERIA -->
+<div id="page-dulceria" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;">
+        <div class="section-tag">Snacks y Bebidas</div>
+        <h1 class="section-title" style="margin-top:0.3rem;">Dulceria <span class="db-badge">SUPABASE LIVE</span></h1>
+        <p class="section-sub" style="margin-top:0.5rem;">Productos cargados desde la base de datos</p>
+      </div>
+    </div>
+    <div class="section">
+      <div class="dulceria-grid" id="dulceria-grid">
+        <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);">
+          <div class="loading-spinner"></div> Cargando menu...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOCATIONS -->
+<div id="page-locations" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;">
+        <div class="section-tag">Presencia Mundial</div>
+        <h1 class="section-title" style="margin-top:0.3rem;">Nuestras Sucursales</h1>
+        <p class="section-sub" style="margin-top:0.5rem;">Mas de 25 sucursales en 12 paises alrededor del mundo</p>
+      </div>
+    </div>
+    <div class="section" id="locations-content"></div>
+  </div>
+</div>
+
+<!-- PROMOCIONES -->
+<div id="page-promociones" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;">
+        <div class="section-tag">Ofertas Especiales</div>
+        <h1 class="section-title" style="margin-top:0.3rem;">Promociones</h1>
+      </div>
+    </div>
+    <div class="section"><div class="promos-grid" id="promos-grid"></div></div>
+  </div>
+</div>
+
+<!-- CARRITO -->
+<div id="page-carrito" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;"><div class="section-tag">Mi Seleccion</div><h1 class="section-title" style="margin-top:0.3rem;">Carrito de Compras</h1></div>
+    </div>
+    <div class="section">
+      <div class="cart-layout">
+        <div>
+          <div class="cart-items-box" id="cart-items-container">
+            <div style="padding:3rem;text-align:center;color:var(--text-muted);">
+              <div style="font-size:0.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem;color:rgba(215,93,70,0.4);">CARRITO VACIO</div>
+              <p style="font-size:0.9rem;">No tienes items en tu carrito todavia</p>
+              <button class="btn-full" style="max-width:200px;margin:1.2rem auto 0;" onclick="showPage('cartelera')">Ver Cartelera</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="cart-summary-box">
+            <div class="summary-title">Resumen de Orden</div>
+            <div class="summary-row"><span>Boletos</span><span id="summaryTickets">$0.00</span></div>
+            <div class="summary-row"><span>Dulceria</span><span id="summarySnacks">$0.00</span></div>
+            <div class="summary-row"><span>Cargo de servicio</span><span>$2.00</span></div>
+            <div class="summary-total"><span>Total</span><span id="cartTotal">$2.00</span></div>
+            <button class="btn-full" onclick="irAlPago()">Proceder al Pago</button>
+            <button class="btn-full-outline" onclick="showPage('cartelera')">Seguir comprando</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGO -->
+<div id="page-pago" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;"><div class="section-tag">Finalizar Compra</div><h1 class="section-title" style="margin-top:0.3rem;">Metodo de Pago <span class="db-badge">SUPABASE</span></h1></div>
+    </div>
+    <div class="section">
+      <div class="payment-layout">
+        <div>
+          <div class="payment-form-box">
+            <h3 style="font-weight:800;margin-bottom:1.5rem;font-size:1rem;">Selecciona tu metodo de pago</h3>
+            <div class="pay-methods">
+              <div class="pay-method active" onclick="setPayMethod('credito',this)">
+                <span style="display:block;font-size:1.1rem;margin-bottom:0.3rem;font-weight:800;">CREDITO</span>
+                <span class="pay-method-label">Tarjeta de credito</span>
+              </div>
+              <div class="pay-method" onclick="setPayMethod('debito',this)">
+                <span style="display:block;font-size:1.1rem;margin-bottom:0.3rem;font-weight:800;">DEBITO</span>
+                <span class="pay-method-label">Tarjeta de debito</span>
+              </div>
+              <div class="pay-method" onclick="setPayMethod('transferencia',this)">
+                <span style="display:block;font-size:1.1rem;margin-bottom:0.3rem;font-weight:800;">TRANSFER</span>
+                <span class="pay-method-label">Bancaria</span>
+              </div>
+            </div>
+            <div id="payFormCard">
+              <div class="form-group"><label class="form-label">Nombre del titular</label><input type="text" class="form-input" placeholder="Como aparece en la tarjeta" id="payTitular"></div>
+              <div class="form-group"><label class="form-label">Numero de tarjeta</label><input type="text" class="form-input" placeholder="0000 0000 0000 0000" maxlength="19" id="payNumTarjeta" oninput="formatCard(this)"></div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Vencimiento</label><input type="text" class="form-input" placeholder="MM/AA" maxlength="5" id="payVencimiento" oninput="formatExpiry(this)"></div>
+                <div class="form-group"><label class="form-label">CVV</label><input type="text" class="form-input" placeholder="000" maxlength="4" id="payCVV"></div>
+              </div>
+            </div>
+            <div id="payFormTransfer" style="display:none;">
+              <div class="form-group"><label class="form-label">Banco emisor</label>
+                <select class="form-select" id="payBanco">
+                  <option value="">Seleccionar banco</option>
+                  <option>Banco Popular Dominicano</option><option>BHD Leon</option>
+                  <option>Banreservas</option><option>Scotiabank</option>
+                  <option>Banco Santa Cruz</option><option>Citibank</option>
+                </select>
+              </div>
+              <div class="form-group"><label class="form-label">Numero de referencia</label><input type="text" class="form-input" placeholder="Numero de referencia" id="payRef"></div>
+              <div class="form-group"><label class="form-label">Nombre del titular</label><input type="text" class="form-input" placeholder="Nombre completo" id="payTitularTransfer"></div>
+              <div class="form-group"><label class="form-label">Fecha de transferencia (DD/MM/AAAA)</label><input type="text" class="form-input" placeholder="07/06/2025" id="payFechaTransfer"></div>
+            </div>
+            <div class="error-msg" id="payError"></div>
+            <button class="btn-full" id="btnConfirmarPago" onclick="procesarPago()">Confirmar Pago</button>
+            <div style="margin-top:1rem;padding:0.8rem;background:rgba(76,175,125,0.07);border:1px solid rgba(76,175,125,0.2);border-radius:8px;font-size:0.77rem;color:#6FD0A4;font-weight:600;">Tus datos estan protegidos con cifrado SSL. Pago procesado via Supabase.</div>
+          </div>
+        </div>
+        <div>
+          <div class="cart-summary-box">
+            <div class="summary-title">Resumen de Orden</div>
+            <div id="paySummaryItems"></div>
+            <div class="summary-total"><span>Total</span><span id="payTotalDisplay">$0.00</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MIS COMPRAS -->
+<div id="page-compras" class="page">
+  <div style="padding-top:70px;">
+    <div style="background:linear-gradient(to bottom,var(--dark-2),var(--dark));padding:3rem 2rem;border-bottom:1px solid rgba(215,93,70,0.1);">
+      <div style="max-width:1440px;margin:0 auto;"><div class="section-tag">Historial</div><h1 class="section-title" style="margin-top:0.3rem;">Mis Compras <span class="db-badge">SUPABASE</span></h1></div>
+    </div>
+    <div class="section"><div class="purchases-list" id="purchases-list">
+      <div style="text-align:center;padding:3rem;color:var(--text-muted);">Inicia sesion para ver tus compras.</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- REGISTRO -->
+<div id="page-registro" class="page">
+  <div class="login-page">
+    <div class="login-bg-grad"></div>
+    <div class="login-glow"></div>
+    <div class="login-card">
+      <div class="login-logo-wrap">
+        <div class="login-logo-icon">M</div>
+        <div class="login-logo-name">MOVIORA <span>CINES</span></div>
+        <div class="login-logo-sub">Crea tu cuenta gratis</div>
+      </div>
+      <h2 class="login-title">Crear Cuenta</h2>
+      <p class="login-desc">Registrate para comprar boletos y acceder a promociones</p>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Nombre</label><input type="text" class="form-input" placeholder="Tu nombre" id="regNombre"></div>
+        <div class="form-group"><label class="form-label">Apellido</label><input type="text" class="form-input" placeholder="Tu apellido" id="regApellido"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Correo electronico</label><input type="email" class="form-input" placeholder="tu@correo.com" id="regCorreo"></div>
+      <div class="form-group"><label class="form-label">Contrasena (min 8 caracteres)</label><input type="password" class="form-input" placeholder="••••••••" id="regPass"></div>
+      <div class="error-msg" id="regError"></div>
+      <button class="btn-full" onclick="registrarCliente()">Crear Cuenta</button>
+      <p style="text-align:center;margin-top:1.2rem;font-size:0.82rem;color:var(--text-muted);">Ya tienes cuenta? <span style="color:var(--coral-light);cursor:pointer;font-weight:700;" onclick="showPage('login')">Inicia sesion</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="page-login" class="page">
+  <div class="login-page">
+    <div class="login-bg-grad"></div>
+    <div class="login-glow"></div>
+    <div class="login-card">
+      <div class="login-logo-wrap">
+        <div class="login-logo-icon">M</div>
+        <div class="login-logo-name">MOVIORA <span>CINES</span></div>
+        <div class="login-logo-sub">Tu destino cinematografico premium</div>
+      </div>
+      <div class="tab-switcher">
+        <button class="tab-btn active" onclick="switchLoginTab('cliente',this)">Cliente</button>
+        <button class="tab-btn" onclick="switchLoginTab('empleado',this)">Empleado</button>
+      </div>
+      <div id="loginCliente">
+        <h2 class="login-title">Bienvenido</h2>
+        <p class="login-desc">Inicia sesion para acceder a tu cuenta</p>
+        <!-- Usuarios Demo -->
+        <div class="demo-users-box">
+          <div class="demo-users-title">Usuarios de prueba — Click para entrar rapido</div>
+          <div class="demo-user-btn" onclick="loginRapido('cliente1@moviora.com','cliente123')">
+            <div class="demo-avatar">C1</div>
+            <div>
+              <div class="demo-name">Cliente Demo 1</div>
+              <div class="demo-email">cliente1@moviora.com</div>
+              <div class="demo-pass">Contrasena: cliente123</div>
+            </div>
+          </div>
+          <div class="demo-user-btn" onclick="loginRapido('cliente2@moviora.com','cliente123')">
+            <div class="demo-avatar">C2</div>
+            <div>
+              <div class="demo-name">Cliente Demo 2</div>
+              <div class="demo-email">cliente2@moviora.com</div>
+              <div class="demo-pass">Contrasena: cliente123</div>
+            </div>
+          </div>
+        </div>
+        <div class="divider-row"><div class="divider-line"></div><span class="divider-text">o ingresa manualmente</span><div class="divider-line"></div></div>
+        <div class="form-group"><label class="form-label">Correo electronico</label><input type="email" class="form-input" placeholder="tu@correo.com" id="loginEmail"></div>
+        <div class="form-group"><label class="form-label">Contrasena</label><input type="password" class="form-input" placeholder="••••••••" id="loginPass" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="error-msg" id="loginError"></div>
+        <button class="btn-full" onclick="doLogin()">Iniciar Sesion</button>
+        <p style="text-align:center;margin-top:1.2rem;font-size:0.82rem;color:var(--text-muted);">No tienes cuenta? <span style="color:var(--coral-light);cursor:pointer;font-weight:700;" onclick="showPage('registro')">Registrate gratis</span></p>
+      </div>
+      <div id="loginEmpleado" style="display:none;">
+        <h2 class="login-title">Acceso Empleados</h2>
+        <p class="login-desc">Panel exclusivo del personal</p>
+        <!-- Empleados Demo -->
+        <div class="demo-users-box">
+          <div class="demo-users-title">Empleados registrados en Supabase</div>
+          <div class="demo-user-btn" onclick="loginEmpRapido(1,'paola.compres@moviora.com','emp2025')">
+            <div class="demo-avatar" style="background:var(--petroleum-blue);">PC</div>
+            <div>
+              <div class="demo-name">Paola Compres (ID: 1)</div>
+              <div class="demo-email">paola.compres@moviora.com</div>
+              <div class="demo-pass">ID: 1 | Pass: emp2025</div>
+            </div>
+          </div>
+          <div class="demo-user-btn" onclick="loginEmpRapido(2,'sarah.simon@moviora.com','emp2025')">
+            <div class="demo-avatar" style="background:var(--petroleum-blue);">SS</div>
+            <div>
+              <div class="demo-name">Sarah Simon (ID: 2)</div>
+              <div class="demo-email">sarah.simon@moviora.com</div>
+              <div class="demo-pass">ID: 2 | Pass: emp2025</div>
+            </div>
+          </div>
+          <div class="demo-user-btn" onclick="loginEmpRapido(3,'sofia.mateo@moviora.com','emp2025')">
+            <div class="demo-avatar" style="background:var(--petroleum-blue);">SM</div>
+            <div>
+              <div class="demo-name">Sofia Mateo (ID: 3)</div>
+              <div class="demo-email">sofia.mateo@moviora.com</div>
+              <div class="demo-pass">ID: 3 | Pass: emp2025</div>
+            </div>
+          </div>
+        </div>
+        <div class="divider-row"><div class="divider-line"></div><span class="divider-text">o ingresa manualmente</span><div class="divider-line"></div></div>
+        <div class="form-group"><label class="form-label">ID de Empleado (numero)</label><input type="number" min="1" class="form-input" placeholder="1" id="empId"></div>
+        <div class="form-group"><label class="form-label">Correo electronico</label><input type="email" class="form-input" placeholder="empleado@moviora.com" id="empEmail"></div>
+        <div class="form-group"><label class="form-label">Contrasena</label><input type="password" class="form-input" placeholder="••••••••" id="empPass" onkeydown="if(event.key==='Enter')doEmpLogin()"></div>
+        <div class="error-msg" id="empError"></div>
+        <button class="btn-full" onclick="doEmpLogin()">Acceder al Panel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL EMPLEADOS -->
+<div id="page-panel" class="page">
+  <div class="emp-layout">
+    <aside class="emp-sidebar">
+      <div class="emp-sidebar-logo">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:34px;height:34px;background:var(--red-logo);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;font-family:'Playfair Display',serif;">M</div>
+          <div style="font-size:0.8rem;font-weight:800;letter-spacing:1.5px;">MOVIORA <span style="color:var(--coral-light);">PANEL</span></div>
+        </div>
+        <div style="margin-top:0.8rem;" class="db-badge">Conectado a Supabase</div>
+      </div>
+      <div class="emp-nav-section">General</div>
+      <div class="emp-nav-item active" onclick="empSection('dashboard',this)"><div class="emp-nav-dot"></div>Dashboard</div>
+      <div class="emp-nav-section">Gestion</div>
+      <div class="emp-nav-item" onclick="empSection('salas',this)"><div class="emp-nav-dot"></div>Salas</div>
+      <div class="emp-nav-item" onclick="empSection('funciones',this)"><div class="emp-nav-dot"></div>Funciones</div>
+      <div class="emp-nav-item" onclick="empSection('peliculas',this)"><div class="emp-nav-dot"></div>Peliculas</div>
+      <div class="emp-nav-item" onclick="empSection('ventas',this)"><div class="emp-nav-dot"></div>Ventas / Pagos</div>
+      <div class="emp-nav-section">Analisis</div>
+      <div class="emp-nav-item" onclick="empSection('estadisticas',this)"><div class="emp-nav-dot"></div>Estadisticas</div>
+      <div style="margin-top:auto;padding:1rem 1.4rem;border-top:1px solid rgba(255,255,255,0.05);">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--text-muted);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:1px;">Sesion activa</div>
+        <div style="font-size:0.85rem;font-weight:800;" id="empPanelUser">Empleado</div>
+        <div style="font-size:0.72rem;color:var(--coral-light);margin-top:0.2rem;" id="empPanelRole">empleado_ventas</div>
+        <button class="btn-full-outline" style="margin-top:0.8rem;padding:0.5rem;" onclick="cerrarSesionEmp()">Cerrar Sesion</button>
+      </div>
+    </aside>
+    <main class="emp-content">
+      <div id="panel-dashboard">
+        <div class="emp-header">
+          <div><div class="emp-title">Dashboard <span class="db-badge">LIVE</span></div><div class="emp-subtitle">Resumen en tiempo real desde Supabase</div></div>
+        </div>
+        <div class="stats-grid" id="dashStats">
+          <div class="stat-card"><div class="stat-label">Peliculas Activas</div><div class="stat-value" id="statPeliculas">—</div></div>
+          <div class="stat-card"><div class="stat-label">Funciones Hoy</div><div class="stat-value" id="statFunciones">—</div></div>
+          <div class="stat-card"><div class="stat-label">Productos Menu</div><div class="stat-value" id="statComida">—</div></div>
+          <div class="stat-card"><div class="stat-label">Pagos Registrados</div><div class="stat-value" id="statPagos">—</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header"><span class="table-title">Peliculas en Cartelera (Supabase)</span></div>
+          <table><thead><tr><th>ID</th><th>Nombre</th><th>Genero</th><th>Sala</th><th>Estado</th></tr></thead>
+          <tbody id="dashPeliculasTable"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);">Cargando...</td></tr></tbody></table>
+        </div>
+      </div>
+      <div id="panel-salas" style="display:none;">
+        <div class="emp-header"><div><div class="emp-title">Gestion de Salas</div><div class="emp-subtitle">Salas y capacidades</div></div></div>
+        <div class="table-wrap"><div class="table-header"><span class="table-title">Estado de Salas</span></div>
+          <table><thead><tr><th>Sala</th><th>Tipo</th><th>Capacidad</th><th>Ocupados</th><th>Estado</th></tr></thead>
+          <tbody id="salasTable"></tbody></table>
+        </div>
+      </div>
+      <div id="panel-funciones" style="display:none;">
+        <div class="emp-header"><div><div class="emp-title">Funciones <span class="db-badge">SUPABASE</span></div><div class="emp-subtitle">Funciones programadas</div></div>
+        <button class="btn-full" style="max-width:180px;padding:0.6rem;" onclick="showModal('modalCrearFuncion')">+ Nueva Funcion</button></div>
+        <div class="table-wrap"><div class="table-header"><span class="table-title">Funciones registradas</span></div>
+          <table><thead><tr><th>Pelicula</th><th>Sala</th><th>Fecha</th><th>Hora</th><th>Precio</th><th>Formato</th></tr></thead>
+          <tbody id="funcionesTable"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);">Cargando funciones...</td></tr></tbody></table>
+        </div>
+      </div>
+      <div id="panel-peliculas" style="display:none;">
+        <div class="emp-header"><div><div class="emp-title">Peliculas <span class="db-badge">SUPABASE</span></div><div class="emp-subtitle">Catalogo desde Supabase</div></div>
+        <button class="btn-full" style="max-width:200px;padding:0.6rem;" onclick="showModal('modalAgregarPelicula')">+ Agregar Pelicula</button></div>
+        <div class="movies-grid" id="panelMovies">
+          <div style="grid-column:1/-1;text-align:center;color:var(--text-muted);">Cargando peliculas...</div>
+        </div>
+      </div>
+      <div id="panel-ventas" style="display:none;">
+        <div class="emp-header"><div><div class="emp-title">Ventas / Pagos <span class="db-badge">SUPABASE</span></div><div class="emp-subtitle">Historial de pagos registrados</div></div></div>
+        <div class="table-wrap"><div class="table-header"><span class="table-title">Pagos en Supabase</span></div>
+          <table><thead><tr><th>ID</th><th>Cliente</th><th>Metodo</th><th>Total</th><th>Estado</th><th>Fecha</th></tr></thead>
+          <tbody id="ventasTable"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);">Cargando pagos...</td></tr></tbody></table>
+        </div>
+      </div>
+      <div id="panel-estadisticas" style="display:none;">
+        <div class="emp-header"><div><div class="emp-title">Estadisticas <span class="db-badge">SUPABASE</span></div></div></div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-label">Peliculas activas</div><div class="stat-value" id="statPel2">—</div></div>
+          <div class="stat-card"><div class="stat-label">Total funciones</div><div class="stat-value" id="statFunc2">—</div></div>
+          <div class="stat-card"><div class="stat-label">Items en menu</div><div class="stat-value" id="statMenu2">—</div></div>
+          <div class="stat-card"><div class="stat-label">Pagos registrados</div><div class="stat-value" id="statPag2">—</div></div>
+        </div>
+        <div class="table-wrap" style="margin-top:1.5rem;">
+          <div class="table-header"><span class="table-title">Peliculas por Sala</span></div>
+          <table><thead><tr><th>Sala</th><th>Peliculas Asignadas</th></tr></thead>
+          <tbody id="estadSalasTable"></tbody></table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- SPOTY -->
+<button class="spoty-btn" onclick="toggleSpoty()" title="Hablar con Spoty">
+  <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;color:var(--pink-soft);">SP</div>
+</button>
+<div class="spoty-panel" id="spotyPanel">
+  <div class="spoty-header">
+    <div class="spoty-avatar">SP</div>
+    <div><div class="spoty-name">Spoty</div><div class="spoty-status">Asistente MOVIORA · IA</div></div>
+    <button class="close-spoty" onclick="toggleSpoty()">×</button>
+  </div>
+  <div class="spoty-messages" id="spotyMessages">
+    <div class="spoty-msg bot">Hola, soy Spoty tu asistente de MOVIORA CINES. Estoy conectado a Supabase y puedo consultarte sobre peliculas, funciones, dulceria, sucursales y mas. Como te ayudo?</div>
+  </div>
+  <div class="spoty-chips" id="spotyChips">
+    <button class="spoty-chip" onclick="spotyQuick('Que peliculas hay en cartelera?')">Ver cartelera</button>
+    <button class="spoty-chip" onclick="spotyQuick('Que hay en la dulceria?')">Dulceria</button>
+    <button class="spoty-chip" onclick="spotyQuick('Donde estan las sucursales?')">Sucursales</button>
+    <button class="spoty-chip" onclick="spotyQuick('Hay promociones?')">Promociones</button>
+  </div>
+  <div class="spoty-input">
+    <input type="text" id="spotyInput" placeholder="Escribe tu mensaje..." onkeydown="if(event.key==='Enter')sendSpoty()">
+    <button class="spoty-send" onclick="sendSpoty()">↗</button>
+  </div>
+</div>
+
+<!-- MODALES -->
+<div id="modal-ticket" class="modal-overlay" style="display:none;" onclick="closeModal('modal-ticket')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header"><span class="modal-title">Tu Boleto Confirmado</span><button class="close-modal" onclick="closeModal('modal-ticket')">×</button></div>
+    <div class="modal-body">
+      <div class="ticket">
+        <div class="ticket-top">
+          <div><div class="ticket-movie-name" id="ticketMovieName">—</div><div class="ticket-cinema-name">MOVIORA CINES - Santo Domingo, RD</div></div>
+          <div class="ticket-id" id="ticketId">Boleto #—</div>
+        </div>
+        <hr class="ticket-divider">
+        <div class="ticket-body">
+          <div class="ticket-field"><label>Fecha</label><span id="ticketFecha">—</span></div>
+          <div class="ticket-field"><label>Asientos</label><span id="ticketSeats">—</span></div>
+          <div class="ticket-field"><label>Total Pagado</label><span id="ticketTotal" style="color:var(--coral-light);">—</span></div>
+          <div class="ticket-field"><label>Metodo</label><span id="ticketMetodo">—</span></div>
+        </div>
+        <div class="ticket-barcode">
+          <div class="barcode-lines" id="barcodeLines"></div>
+          <div class="barcode-num" id="barcodeNum">— — — —</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+        <button class="btn-full" style="margin-top:0;" onclick="window.print()">Imprimir</button>
+        <button class="btn-full-outline" style="margin-top:0;" onclick="closeModal('modal-ticket');showPage('compras')">Ver Mis Compras</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-seats" class="modal-overlay" style="display:none;" onclick="closeModal('modal-seats')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:680px;">
+    <div class="modal-header"><span class="modal-title" id="seatModalTitle">Seleccionar Asientos</span><button class="close-modal" onclick="closeModal('modal-seats')">×</button></div>
+    <div class="modal-body">
+      <div style="margin-bottom:1rem;font-size:0.82rem;color:var(--text-muted);">Precio por asiento: <strong style="color:var(--coral-light);" id="seatPrice">$12.00</strong></div>
+      <div class="seat-legend">
+        <div class="legend-item"><div class="seat-dot seat-dot-free"></div>Disponible</div>
+        <div class="legend-item"><div class="seat-dot seat-dot-taken"></div>Ocupado</div>
+        <div class="legend-item"><div class="seat-dot seat-dot-selected"></div>Seleccionado</div>
+      </div>
+      <div style="overflow-x:auto;">
+        <div class="screen">PANTALLA</div>
+        <div class="seats-container" id="seatMap"></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;flex-wrap:wrap;gap:1rem;">
+        <div style="font-size:0.85rem;color:var(--text-muted);">Seleccionados: <strong style="color:var(--coral-light);" id="selectedSeatsLabel">Ninguno</strong></div>
+        <button class="btn-full" style="max-width:200px;margin-top:0;" onclick="addToCart()">Agregar al Carrito</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalCrearFuncion" class="modal-overlay" style="display:none;" onclick="closeModal('modalCrearFuncion')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header"><span class="modal-title">Nueva Funcion</span><button class="close-modal" onclick="closeModal('modalCrearFuncion')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Pelicula</label><select class="form-select" id="newFunPelicula"><option value="">Seleccionar pelicula</option></select></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input" id="newFunFecha"></div>
+        <div class="form-group"><label class="form-label">Hora</label><input type="time" class="form-input" id="newFunHora"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Sala</label>
+          <select class="form-select" id="newFunSala">
+            <option>Sala 1-IMAX</option><option>Sala 2</option><option>Sala 3-4DX</option><option>Sala 4</option><option>Sala 5</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Precio ($)</label><input type="number" class="form-input" placeholder="12.00" id="newFunPrecio"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Formato</label>
+        <select class="form-select" id="newFunFormato"><option>2D</option><option>3D</option><option>IMAX 3D</option><option>4DX</option></select>
+      </div>
+      <div class="error-msg" id="funError"></div>
+      <button class="btn-full" onclick="crearFuncion()">Crear Funcion en Supabase</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalAgregarPelicula" class="modal-overlay" style="display:none;" onclick="closeModal('modalAgregarPelicula')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header"><span class="modal-title">Agregar Pelicula</span><button class="close-modal" onclick="closeModal('modalAgregarPelicula')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Titulo</label><input type="text" class="form-input" placeholder="Titulo de la pelicula" id="newPelTitulo"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Genero</label>
+          <select class="form-select" id="newPelGenero">
+            <option>Accion</option><option>Drama</option><option>Comedia</option><option>Terror</option>
+            <option>Animacion</option><option>Ciencia Ficcion</option><option>Aventura</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Sala</label>
+          <select class="form-select" id="newPelSala">
+            <option>Sala 1-IMAX</option><option>Sala 2</option><option>Sala 3-4DX</option><option>Sala 4</option><option>Sala 5</option>
+          </select>
+        </div>
+      </div>
+      <div class="error-msg" id="pelError"></div>
+      <button class="btn-full" onclick="agregarPelicula()">Guardar en Supabase</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== SUPABASE INIT ====================
+// ══════════════════════════════════════════════════════
+// CREDENCIALES SUPABASE
+// Reemplaza estos dos valores con los de tu proyecto:
+// Supabase → Settings → API → Project URL y anon public key
+// La anon key SIEMPRE empieza con "eyJ..."
+// ══════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://eisfittfrfuclvelpupz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVpc2ZpdHRmcmZ1Y2x2ZWxwdXB6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NjYwMzQsImV4cCI6MjA5NjQ0MjAzNH0.cdFOriyUXHmvT2j679N9jqhea_9ZnfYBL9ylrqSHt3c'; // <-- reemplaza esto
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── Diagnóstico automático al cargar ─────────────────
+async function diagnosticarConexion() {
+  const isPlaceholder = SUPABASE_KEY === 'PEGA_AQUI_TU_ANON_KEY' || !SUPABASE_KEY.startsWith('eyJ');
+  if (isPlaceholder) {
+    mostrarBannerError(
+      '⚠️ CONFIGURACIÓN PENDIENTE',
+      'La clave de Supabase no está configurada. Ve a Supabase → Settings → API y copia tu <strong>anon public key</strong> (empieza con eyJ...). Luego pégala en el HTML donde dice PEGA_AQUI_TU_ANON_KEY.',
+      '#e53e3e'
+    );
+    return false;
+  }
+  // Probar conexión real
+  const { error } = await sb.from('clientes').select('id').limit(1);
+  if (error) {
+    if (error.message && error.message.includes('row-level security')) {
+      mostrarBannerError(
+        '⚠️ BASE DE DATOS: RLS ACTIVO',
+        'Las tablas tienen Row Level Security activo sin políticas. Ejecuta el SQL de MOVIORA_SQL_DEFINITIVO.sql en Supabase → SQL Editor.',
+        '#dd6b20'
+      );
+    } else {
+      mostrarBannerError(
+        '⚠️ ERROR DE CONEXIÓN: ' + error.code,
+        'Detalle: ' + error.message + '. Revisa que tu anon key sea correcta y que las tablas existan.',
+        '#e53e3e'
+      );
+    }
+    return false;
+  }
+  return true;
+}
+
+function mostrarBannerError(titulo, detalle, color) {
+  const banner = document.createElement('div');
+  banner.id = 'db-error-banner';
+  banner.style.cssText = `position:fixed;top:70px;left:0;right:0;z-index:9999;background:${color};color:#fff;padding:1rem 2rem;text-align:center;font-family:sans-serif;font-size:0.9rem;line-height:1.6;`;
+  banner.innerHTML = `<strong>${titulo}</strong><br>${detalle}<br><button onclick="document.getElementById('db-error-banner').remove()" style="margin-top:0.5rem;background:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.5);color:#fff;padding:0.3rem 1rem;border-radius:4px;cursor:pointer;font-size:0.8rem;">Cerrar aviso</button>`;
+  document.body.appendChild(banner);
+}
+
+// ==================== STATE ====================
+let currentUser = null; // {type: 'cliente'|'empleado', data: {...}}
+let cartItems = [];
+let selectedSeats = [];
+let currentMovieForSeats = null;
+let peliculasData = [];
+let comidaData = [];
+let spotyOpen = false;
+let currentPayMethod = 'credito';
+
+// ==================== DATA ESTATICA ====================
+const promos = [
+  {tag:'ESPECIAL',tagClass:'promo-tag-a',title:'Martes de Cine 2x1',desc:'Todos los martes compra un boleto y lleva a un acompanante gratis. Valido para funciones regulares y 3D.',code:'MARTES2X1'},
+  {tag:'PAREJA',tagClass:'promo-tag-b',title:'Combo Pareja',desc:'2 boletos mas 2 palomitas grandes mas 2 refrescos por solo $29.99. Ahorra hasta $15.',code:'PAREJA30'},
+  {tag:'PREMIUM',tagClass:'promo-tag-c',title:'Club Moviora Premium',desc:'Suscribete al club y obten un 20% de descuento permanente en todas tus compras.',code:'PREMIUM20'},
+  {tag:'VERANO',tagClass:'promo-tag-a',title:'Promo Verano 3D',desc:'Durante el verano disfruta de peliculas en formato 3D al precio de 2D.',code:'VERANO3D'},
+  {tag:'FAMILIA',tagClass:'promo-tag-b',title:'Domingos en Familia',desc:'Los domingos: 4 boletos por el precio de 3 mas combo familiar con 25% de descuento.',code:'FAMILIA4X3'},
+  {tag:'ESTUD',tagClass:'promo-tag-c',title:'Descuento Universitario',desc:'Presenta tu carnet universitario y obten 30% de descuento en todos los boletos.',code:'UNIV30'},
+];
+
+const locations = [
+  {country:'Republica Dominicana',flag:'DO',branches:[
+    {city:'Santo Domingo',address:'Av. Winston Churchill esq. Gustavo Mejia Ricart, DN',phone:'809-567-8900',hours:'10:00 AM - 12:00 AM',salas:14},
+    {city:'Santiago',address:'Centro Comercial Bella Terra, Santiago de los Caballeros',phone:'809-971-2300',hours:'10:00 AM - 11:00 PM',salas:10},
+    {city:'San Juan',address:'Calle Duarte #45, San Juan de la Maguana',phone:'809-557-1100',hours:'10:00 AM - 10:00 PM',salas:6},
+    {city:'Punta Cana',address:'Bavaro Town Center, Bavaro Beach, La Altagracia',phone:'809-552-1800',hours:'09:00 AM - 12:00 AM',salas:8},
+    {city:'Azua',address:'Av. Independencia #12, Azua de Compostela',phone:'809-521-0500',hours:'10:00 AM - 10:00 PM',salas:4},
+    {city:'Bahoruco',address:'Calle Principal #8, Neiba, Provincia Bahoruco',phone:'809-524-3200',hours:'10:00 AM - 9:00 PM',salas:3},
+    {city:'Elias Pina',address:'Av. Restauracion #22, Comendador, Elias Pina',phone:'809-572-4100',hours:'10:00 AM - 9:00 PM',salas:3},
+  ]},
+  {country:'Puerto Rico',flag:'PR',branches:[
+    {city:'San Juan',address:'Mall of San Juan, 49 Premium Outlets Blvd, Isla Verde',phone:'787-768-9000',hours:'10:00 AM - 11:00 PM',salas:12},
+    {city:'Bayamon',address:'Las Catalinas Mall, PR-2 Km 14.1, Bayamon',phone:'787-778-5500',hours:'10:00 AM - 11:00 PM',salas:10},
+  ]},
+  {country:'Reino Unido',flag:'GB',branches:[
+    {city:'Londres',address:'45 Leicester Square, West End, London WC2H 7LQ',phone:'+44 20 7123 4567',hours:'10:00 AM - 12:00 AM',salas:12}
+  ]},
+  {country:'Corea del Sur',flag:'KR',branches:[
+    {city:'Seoul',address:'123 Gangnam-daero, Gangnam-gu, Seoul',phone:'+82 2 1234 5678',hours:'09:00 AM - 1:00 AM',salas:10}
+  ]},
+  {country:'India',flag:'IN',branches:[
+    {city:'Nueva Delhi',address:'DLF Promenade, Nelson Mandela Marg, Vasant Kunj',phone:'+91 11 4567 8901',hours:'10:00 AM - 12:00 AM',salas:16}
+  ]},
+  {country:'Emiratos Arabes Unidos',flag:'AE',branches:[
+    {city:'Dubai',address:'Dubai Mall, Financial Centre Road, Downtown Dubai',phone:'+971 4 362 7444',hours:'10:00 AM - 2:00 AM',salas:20}
+  ]},
+  {country:'Sudafrica',flag:'ZA',branches:[
+    {city:'Johannesburgo',address:'Sandton City Shopping Centre, 163 Rivonia Rd, Sandton',phone:'+27 11 783 0000',hours:'09:00 AM - 11:00 PM',salas:14},
+    {city:'Ciudad del Cabo',address:'V&A Waterfront, Dock Rd, Cape Town',phone:'+27 21 418 3200',hours:'09:00 AM - 11:00 PM',salas:12},
+  ]},
+  {country:'Haiti',flag:'HT',branches:[
+    {city:'Port-au-Prince',address:'Place Boyer, Petion-Ville, Port-au-Prince',phone:'+509 3444 5678',hours:'09:00 AM - 11:00 PM',salas:8}
+  ]},
+];
+
+const salasData = [
+  {name:'Sala 1',tipo:'IMAX',cap:230,ocupados:187},{name:'Sala 2',tipo:'Premium',cap:200,ocupados:110},
+  {name:'Sala 3',tipo:'4DX',cap:180,ocupados:120},{name:'Sala 4',tipo:'Estandar',cap:150,ocupados:45},
+  {name:'Sala 5',tipo:'Estandar',cap:150,ocupados:90},{name:'Sala 6',tipo:'VIP',cap:80,ocupados:12},
+];
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', async () => {
+  renderPromos();
+  renderLocations();
+  renderSalasTable();
+  renderMainFooter();
+  // Restaurar sesion local
+  const stored = localStorage.getItem('mv_session');
+  if (stored) {
+    try { currentUser = JSON.parse(stored); updateNavForUser(); } catch(e) {}
+  }
+  // Diagnóstico y carga de datos
+  await diagnosticarConexion();
+  await cargarPeliculas();
+  await cargarComida();
+});
+
+// ==================== SUPABASE CRUD ====================
+async function cargarPeliculas() {
+  const { data, error } = await sb.from('peliculas').select('*').eq('activo', true);
+  if (error) { console.error('Error cargando peliculas:', error); peliculasData = getPeliculasFallback(); }
+  else peliculasData = data && data.length > 0 ? data : getPeliculasFallback();
+  renderMoviesGrid('homeMovies', peliculasData.slice(0, 6));
+  renderMoviesGrid('cartelera-grid', peliculasData);
+  renderPanelMovies();
+  await cargarFuncionesModal();
+}
+
+function getPeliculasFallback() {
+  return [
+    {id:1,nombre:'El Diablo Viste a la Moda 2',genero:'Comedia',sala:'Sala 1-IMAX',activo:true},
+    {id:2,nombre:'The Mandalorian',genero:'Ciencia Ficcion',sala:'Sala 2',activo:true},
+    {id:3,nombre:'Michael',genero:'Drama',sala:'Sala 3-4DX',activo:true},
+    {id:4,nombre:'Scary Movie 6',genero:'Comedia / Terror',sala:'Sala 4',activo:true},
+    {id:5,nombre:'Super Mario Galaxy',genero:'Animacion',sala:'Sala 5',activo:true},
+    {id:6,nombre:'Hoppers',genero:'Aventura',sala:'Sala 2',activo:true},
+    {id:7,nombre:'De Tal Palo Tal Astilla',genero:'Comedia',sala:'Sala 4',activo:true},
+  ];
+}
+
+async function cargarComida() {
+  const { data, error } = await sb.from('comida').select('*').eq('disponible', true);
+  if (error) { console.error('Error comida:', error); comidaData = getComidaFallback(); }
+  else comidaData = data && data.length > 0 ? data : getComidaFallback();
+  renderDulceria();
+}
+
+function getComidaFallback() {
+  return [
+    {id:1,nombre:'Palomitas Grandes',precio:5.50},{id:2,nombre:'Palomitas Medianas',precio:3.50},
+    {id:3,nombre:'Refresco Grande 32oz',precio:4.00},{id:4,nombre:'Agua Mineral',precio:2.50},
+    {id:5,nombre:'Nachos con Queso',precio:6.50},{id:6,nombre:'Hot Dog Premium',precio:5.00},
+    {id:7,nombre:'Combo Duo',precio:13.00},{id:8,nombre:'M&Ms',precio:3.00},
+    {id:9,nombre:'Dulces Surtidos',precio:2.50},{id:10,nombre:'Cafe Americano',precio:3.50},
+    {id:11,nombre:'Helado en Vaso',precio:4.00},{id:12,nombre:'Combo Familiar',precio:28.00},
+  ];
+}
+
+// ==================== AUTH SUPABASE ====================
+async function doLogin() {
+  const correo = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  if (!correo || !pass) { errEl.textContent = 'Completa todos los campos.'; errEl.style.display = 'block'; return; }
+  
+  let loginResult;
+  try {
+    loginResult = await sb.from('clientes').select('*').eq('correo', correo).eq('contrasena', pass).single();
+  } catch(e) {
+    errEl.textContent = 'Error de conexion: ' + e.message; errEl.style.display = 'block'; return;
+  }
+  const { data, error } = loginResult;
+  if (error) {
+    if (error.message && error.message.includes('row-level security')) {
+      errEl.textContent = 'Error de base de datos: RLS activo. Ejecuta el SQL en Supabase.';
+    } else if (error.code === 'PGRST116') {
+      errEl.textContent = 'Correo o contrasena incorrectos.';
+    } else {
+      errEl.textContent = 'Error: ' + (error.message || JSON.stringify(error));
+    }
+    errEl.style.display = 'block'; return;
+  }
+  if (!data) { errEl.textContent = 'Correo o contrasena incorrectos.'; errEl.style.display = 'block'; return; }
+  currentUser = { type: 'cliente', data };
+  localStorage.setItem('mv_session', JSON.stringify(currentUser));
+  updateNavForUser();
+  document.getElementById('welcomeBanner').style.display = 'flex';
+  document.getElementById('welcomeUserName').textContent = `Hola, ${data.nombre} ${data.apellido}! Tu experiencia cinematografica te espera.`;
+  showPage('home');
+  showNotif(`Bienvenido, ${data.nombre}!`);
+}
+
+async function loginRapido(correo, pass) {
+  document.getElementById('loginEmail').value = correo;
+  document.getElementById('loginPass').value = pass;
+  doLogin();
+}
+
+async function registrarCliente() {
+  const nombre = document.getElementById('regNombre').value.trim();
+  const apellido = document.getElementById('regApellido').value.trim();
+  const correo = document.getElementById('regCorreo').value.trim().toLowerCase();
+  const contrasena = document.getElementById('regPass').value;
+  const errEl = document.getElementById('regError');
+  errEl.style.display = 'none';
+  if (!nombre || !apellido || !correo || !contrasena) { errEl.textContent = 'Completa todos los campos.'; errEl.style.display = 'block'; return; }
+  if (contrasena.length < 8) { errEl.textContent = 'La contrasena debe tener al menos 8 caracteres.'; errEl.style.display = 'block'; return; }
+  if (!correo.includes('@') || !correo.includes('.')) { errEl.textContent = 'Ingresa un correo valido.'; errEl.style.display = 'block'; return; }
+  if (nombre.length < 1 || apellido.length < 1) { errEl.textContent = 'Nombre y apellido son requeridos.'; errEl.style.display = 'block'; return; }
+  if (correo.length < 5) { errEl.textContent = 'Correo invalido.'; errEl.style.display = 'block'; return; }
+  
+  let regResult;
+  try {
+    regResult = await sb.from('clientes').insert([{ nombre, apellido, correo, contrasena }]).select().single();
+  } catch(e) {
+    errEl.textContent = 'Error de conexion: ' + e.message; errEl.style.display = 'block'; return;
+  }
+  const { data, error } = regResult;
+  if (error) {
+    if (error.message && error.message.includes('row-level security')) {
+      errEl.textContent = 'Error BD: RLS activo. Ve a Supabase → SQL Editor y ejecuta el SQL de MOVIORA_SQL_DEFINITIVO.sql';
+    } else if (error.message && error.message.includes('unique')) {
+      errEl.textContent = 'Este correo ya esta registrado.';
+    } else if (error.message && (error.message.includes('JWT') || error.message.includes('apikey') || error.message.includes('Invalid'))) {
+      errEl.textContent = 'Clave Supabase invalida. Ve al HTML y reemplaza SUPABASE_KEY con tu anon key real (empieza con eyJ...).';
+    } else {
+      errEl.textContent = 'Error: ' + (error.message || JSON.stringify(error));
+    }
+    errEl.style.display = 'block'; return;
+  }
+  currentUser = { type: 'cliente', data };
+  localStorage.setItem('mv_session', JSON.stringify(currentUser));
+  updateNavForUser();
+  showPage('home');
+  showNotif('Cuenta creada exitosamente. Bienvenido, ' + nombre + '!');
+}
+
+async function doEmpLogin() {
+  const id = document.getElementById('empId').value.trim();
+  const correo = document.getElementById('empEmail').value.trim();
+  const pass = document.getElementById('empPass').value;
+  const errEl = document.getElementById('empError');
+  errEl.style.display = 'none';
+  if (!id || !correo || !pass) { errEl.textContent = 'Completa todos los campos.'; errEl.style.display = 'block'; return; }
+  
+  const numericId = parseInt(id);
+  if (isNaN(numericId)) {
+    errEl.textContent = 'El ID debe ser un numero (1, 2, 3...).'; errEl.style.display = 'block'; return;
+  }
+  let empResult;
+  try {
+    empResult = await sb.from('empleados').select('*').eq('id', numericId).eq('correo', correo).eq('contrasena', pass).single();
+  } catch(e) {
+    errEl.textContent = 'Error de conexion: ' + e.message; errEl.style.display = 'block'; return;
+  }
+  const { data, error } = empResult;
+  if (error) {
+    if (error.message && error.message.includes('row-level security')) {
+      errEl.textContent = 'Error BD: RLS activo. Ejecuta el SQL en Supabase.';
+    } else if (error.code === 'PGRST116') {
+      errEl.textContent = 'Credenciales incorrectas. Verifica ID (numero), correo y contrasena.';
+    } else if (error.message && (error.message.includes('JWT') || error.message.includes('apikey'))) {
+      errEl.textContent = 'Clave Supabase invalida. Reemplaza SUPABASE_KEY en el HTML.';
+    } else {
+      errEl.textContent = 'Error: ' + (error.message || JSON.stringify(error));
+    }
+    errEl.style.display = 'block'; return;
+  }
+  if (!data) { errEl.textContent = 'Credenciales incorrectas. Verifica ID, correo y contrasena.'; errEl.style.display = 'block'; return; }
+  currentUser = { type: 'empleado', data };
+  localStorage.setItem('mv_session', JSON.stringify(currentUser));
+  updateNavForUser();
+  showPage('panel');
+  await cargarDashboard();
+  showNotif('Acceso concedido. Bienvenido, ' + data.correo);
+}
+
+async function loginEmpRapido(id, correo, pass) {
+  document.getElementById('empId').value = String(id);
+  document.getElementById('empEmail').value = correo;
+  document.getElementById('empPass').value = pass;
+  doEmpLogin();
+}
+
+function cerrarSesion() {
+  currentUser = null; localStorage.removeItem('mv_session');
+  updateNavForUser(); showPage('home'); showNotif('Sesion cerrada.');
+}
+function cerrarSesionEmp() { cerrarSesion(); }
+
+function updateNavForUser() {
+  const navGuest = document.getElementById('navGuest');
+  const navUser = document.getElementById('navUser');
+  if (currentUser && currentUser.type === 'cliente') {
+    navGuest.style.display = 'none'; navUser.style.display = 'flex';
+    document.getElementById('navUserAvatar').textContent = currentUser.data.nombre[0].toUpperCase();
+    document.getElementById('navUserName').textContent = currentUser.data.nombre;
+  } else {
+    navGuest.style.display = 'flex'; navUser.style.display = 'none';
+  }
+}
+
+// ==================== PAGO SUPABASE ====================
+async function procesarPago() {
+  if (!currentUser || currentUser.type !== 'cliente') { showNotif('Inicia sesion para pagar.'); showPage('login'); return; }
+  if (cartItems.length === 0) { showNotif('El carrito esta vacio.'); return; }
+  const errEl = document.getElementById('payError'); errEl.style.display = 'none';
+  const total = cartItems.reduce((s, i) => s + i.price, 0) + 2;
+  const metodoMap = { credito:'Tarjeta de Credito', debito:'Tarjeta de Debito', transferencia:'Transferencia Bancaria' };
+  const metodo = metodoMap[currentPayMethod];
+  let pagoData = { cliente_id: currentUser.data.id, metodo, total, estado: 'confirmado' };
+  
+  if (currentPayMethod === 'credito' || currentPayMethod === 'debito') {
+    const titular = document.getElementById('payTitular').value.trim();
+    const numTar = document.getElementById('payNumTarjeta').value.replace(/\s/g,'');
+    const venc = document.getElementById('payVencimiento').value;
+    const cvv = document.getElementById('payCVV').value;
+    if (!titular || numTar.length < 16 || venc.length < 5 || cvv.length < 3) {
+      errEl.textContent = 'Completa todos los datos de la tarjeta correctamente.'; errEl.style.display = 'block'; return;
+    }
+    pagoData = { ...pagoData, titular, numero_tarjeta: numTar, vencimiento: venc, cvv };
+  } else {
+    const banco = document.getElementById('payBanco').value;
+    const ref = document.getElementById('payRef').value.trim();
+    const tit = document.getElementById('payTitularTransfer').value.trim();
+    const fecha = document.getElementById('payFechaTransfer').value.trim();
+    if (!banco || !ref || !tit) { errEl.textContent = 'Completa todos los datos de la transferencia.'; errEl.style.display = 'block'; return; }
+    pagoData = { ...pagoData, banco, num_referencia: ref, titular_transfer: tit, fecha_transferencia: fecha || '07/06/2025' };
+  }
+  
+  const btn = document.getElementById('btnConfirmarPago');
+  btn.innerHTML = '<span class="loading-spinner"></span> Procesando...'; btn.disabled = true;
+  
+  const { data: pago, error } = await sb.from('pagos').insert([pagoData]).select().single();
+  btn.innerHTML = 'Confirmar Pago'; btn.disabled = false;
+  
+  if (error) { errEl.textContent = 'Error al procesar el pago: ' + error.message; errEl.style.display = 'block'; return; }
+  
+  // Mostrar boleto
+  const ticketId = '#TK-' + pago.id + Math.floor(Math.random()*1000);
+  document.getElementById('ticketMovieName').textContent = cartItems.find(i=>i.type==='ticket')?.title || 'Moviora Cines';
+  document.getElementById('ticketId').textContent = ticketId;
+  document.getElementById('ticketFecha').textContent = new Date().toLocaleDateString('es-DO');
+  document.getElementById('ticketSeats').textContent = cartItems.filter(i=>i.type==='ticket').map(i=>i.seats||'—').join(', ') || '—';
+  document.getElementById('ticketTotal').textContent = '$' + total.toFixed(2);
+  document.getElementById('ticketMetodo').textContent = metodo;
+  document.getElementById('barcodeNum').textContent = String(pago.id).padStart(4,'0') + ' ' + Math.floor(Math.random()*9999).toString().padStart(4,'0') + ' ' + Math.floor(Math.random()*9999).toString().padStart(4,'0');
+  generateBarcode();
+  
+  cartItems = []; updateCartBadge(); updateCartDisplay();
+  closeModal('modal-seats');
+  showModal('modal-ticket');
+  showNotif('Pago confirmado y guardado en Supabase!');
+}
+
+async function cargarMisCompras() {
+  if (!currentUser || currentUser.type !== 'cliente') {
+    document.getElementById('purchases-list').innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text-muted);">Inicia sesion para ver tus compras.</div>';
+    return;
+  }
+  const { data, error } = await sb.from('pagos').select('*').eq('cliente_id', currentUser.data.id).order('pagado_en', { ascending: false });
+  const list = document.getElementById('purchases-list');
+  if (error || !data || data.length === 0) { list.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text-muted);">No tienes compras registradas aun.</div>'; return; }
+  list.innerHTML = data.map(p => `
+    <div class="purchase-card">
+      <div class="purchase-poster">TICKET<br>#${p.id}</div>
+      <div>
+        <div class="purchase-title">${p.metodo}</div>
+        <div class="purchase-sub">Referencia: ${p.num_referencia || 'TK-' + p.id} | ${(p.pagado_en ? new Date(p.pagado_en).toLocaleDateString('es-DO') : 'Hoy')}</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="status-badge ${p.estado==='confirmado'?'status-confirmed':'status-pending'}">${p.estado}</span>
+        <div class="purchase-price">$${parseFloat(p.total).toFixed(2)}</div>
+        <button class="btn-sm btn-sm-outline" style="margin-top:0.5rem;padding:0.35rem 0.8rem;" onclick="showModal('modal-ticket')">Ver Boleto</button>
+      </div>
+    </div>`).join('');
+}
+
+// ==================== DASHBOARD EMPLEADO ====================
+async function cargarDashboard() {
+  const [rPel, rFun, rCom, rPag] = await Promise.all([
+    sb.from('peliculas').select('*', {count:'exact',head:true}).eq('activo',true),
+    sb.from('funciones').select('*', {count:'exact',head:true}),
+    sb.from('comida').select('*', {count:'exact',head:true}).eq('disponible',true),
+    sb.from('pagos').select('*', {count:'exact',head:true}),
+  ]);
+  const pel = rPel.count || 0, fun = rFun.count || 0, com = rCom.count || 0, pag = rPag.count || 0;
+  document.getElementById('statPeliculas').textContent = pel;
+  document.getElementById('statFunciones').textContent = fun;
+  document.getElementById('statComida').textContent = com;
+  document.getElementById('statPagos').textContent = pag;
+  document.getElementById('statPel2').textContent = pel;
+  document.getElementById('statFunc2').textContent = fun;
+  document.getElementById('statMenu2').textContent = com;
+  document.getElementById('statPag2').textContent = pag;
+  
+  if (currentUser && currentUser.type === 'empleado') {
+    document.getElementById('empPanelUser').textContent = currentUser.data.correo;
+    document.getElementById('empPanelRole').textContent = currentUser.data.rol;
+  }
+  
+  // Tabla peliculas dashboard
+  const tbody = document.getElementById('dashPeliculasTable');
+  tbody.innerHTML = peliculasData.map(p=>`<tr>
+    <td style="color:var(--coral-light);font-weight:700;">#${p.id}</td>
+    <td style="font-weight:700;">${p.nombre}</td><td>${p.genero}</td><td>${p.sala}</td>
+    <td><span class="hall-status hall-available">Activa</span></td>
+  </tr>`).join('');
+  
+  await cargarFunciones();
+  await cargarVentasPanel();
+  await cargarEstadSalas();
+}
+
+async function cargarFunciones() {
+  const { data, error } = await sb.from('funciones').select('*, peliculas(nombre)').order('fecha').order('hora').limit(20);
+  const tbody = document.getElementById('funcionesTable');
+  if (error || !data || data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No hay funciones registradas. Agrega una nueva.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(f=>`<tr>
+    <td style="font-weight:700;">${f.peliculas?.nombre || 'Pelicula #'+f.pelicula_id}</td>
+    <td>${f.sala}</td>
+    <td>${f.fecha}</td>
+    <td>${f.hora}</td>
+    <td style="color:var(--coral-light);font-weight:700;">$${parseFloat(f.precio).toFixed(2)}</td>
+    <td>${f.formato}</td>
+  </tr>`).join('');
+}
+
+async function cargarFuncionesModal() {
+  const sel = document.getElementById('newFunPelicula');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Seleccionar pelicula</option>';
+  peliculasData.forEach(p => { const o = document.createElement('option'); o.value = p.id; o.textContent = p.nombre; sel.appendChild(o); });
+}
+
+async function cargarVentasPanel() {
+  const { data, error } = await sb.from('pagos').select('*, clientes(nombre, apellido)').order('pagado_en', { ascending: false }).limit(10);
+  const tbody = document.getElementById('ventasTable');
+  if (error || !data || data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No hay pagos registrados aun.</td></tr>'; return;
+  }
+  tbody.innerHTML = data.map(p=>`<tr>
+    <td style="color:var(--coral-light);font-weight:700;">#${p.id}</td>
+    <td>${p.clientes ? p.clientes.nombre+' '+p.clientes.apellido : 'Cliente #'+p.cliente_id}</td>
+    <td>${p.metodo}</td>
+    <td style="font-weight:700;color:var(--coral-light);">$${parseFloat(p.total).toFixed(2)}</td>
+    <td><span class="hall-status ${p.estado==='confirmado'?'hall-available':'hall-almost'}">${p.estado}</span></td>
+    <td>${(p.pagado_en ? new Date(p.pagado_en).toLocaleDateString('es-DO') : 'Hoy')}</td>
+  </tr>`).join('');
+}
+
+async function cargarEstadSalas() {
+  const tbody = document.getElementById('estadSalasTable');
+  if (!tbody) return;
+  const salas = ['Sala 1-IMAX','Sala 2','Sala 3-4DX','Sala 4','Sala 5'];
+  const rows = salas.map(sala => {
+    const count = peliculasData.filter(p => p.sala === sala).length;
+    return `<tr><td style="font-weight:700;">${sala}</td><td>${count} pelicula${count!==1?'s':''}</td></tr>`;
+  });
+  tbody.innerHTML = rows.join('');
+}
+
+async function crearFuncion() {
+  const pelicula_id = document.getElementById('newFunPelicula').value;
+  const fecha = document.getElementById('newFunFecha').value;
+  const hora = document.getElementById('newFunHora').value;
+  const sala = document.getElementById('newFunSala').value;
+  const precio = parseFloat(document.getElementById('newFunPrecio').value);
+  const formato = document.getElementById('newFunFormato').value;
+  const errEl = document.getElementById('funError'); errEl.style.display = 'none';
+  if (!pelicula_id || !fecha || !hora || !precio || precio <= 0) {
+    errEl.textContent = 'Completa todos los campos correctamente.'; errEl.style.display = 'block'; return;
+  }
+  const { error } = await sb.from('funciones').insert([{ pelicula_id: parseInt(pelicula_id), fecha, hora, sala, precio, formato }]);
+  if (error) { errEl.textContent = 'Error: ' + error.message; errEl.style.display = 'block'; return; }
+  closeModal('modalCrearFuncion');
+  await cargarFunciones();
+  showNotif('Funcion creada exitosamente en Supabase!');
+}
+
+async function agregarPelicula() {
+  const nombre = document.getElementById('newPelTitulo').value.trim();
+  const genero = document.getElementById('newPelGenero').value;
+  const sala = document.getElementById('newPelSala').value;
+  const errEl = document.getElementById('pelError'); errEl.style.display = 'none';
+  if (!nombre) { errEl.textContent = 'El titulo es requerido.'; errEl.style.display = 'block'; return; }
+  const { data, error } = await sb.from('peliculas').insert([{ nombre, genero, sala, activo: true }]).select().single();
+  if (error) { errEl.textContent = 'Error: ' + error.message; errEl.style.display = 'block'; return; }
+  peliculasData.push(data);
+  closeModal('modalAgregarPelicula');
+  renderMoviesGrid('panelMovies', peliculasData);
+  renderMoviesGrid('homeMovies', peliculasData.slice(0,6));
+  renderMoviesGrid('cartelera-grid', peliculasData);
+  await cargarFuncionesModal();
+  await cargarDashboard();
+  showNotif('"' + nombre + '" agregada a Supabase!');
+}
+
+// ==================== RENDERS ====================
+function renderMoviesGrid(containerId, movies) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  if (!movies || movies.length === 0) {
+    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);">No hay peliculas disponibles.</div>';
+    return;
+  }
+  const colores = ['#3D0D2B,#1A0510','#0A1520,#030810','#1A0A00,#0D0500','#001A10,#000D08','#1A0000,#0D0000','#0A0A1A,#050510','#101A0A,#080D05'];
+  const panel = containerId === 'panelMovies';
+  container.innerHTML = movies.map((m, i) => {
+    const [c1,c2] = colores[i % colores.length].split(',');
+    return `<div class="movie-card">
+      <div class="movie-poster-bg" style="background:linear-gradient(160deg,${c1},${c2});">
+        <div class="movie-poster-title">${m.nombre}</div>
+      </div>
+      <span class="movie-badge badge-hot">EN VIVO</span>
+      <div class="movie-info">
+        <div class="movie-title-card">${m.nombre}</div>
+        <div class="movie-meta">
+          <span class="movie-genre-tag">${m.genero}</span>
+          <span style="font-size:0.72rem;">${m.sala}</span>
+        </div>
+        <div class="movie-actions">
+          <button class="btn-sm btn-sm-primary" onclick="openSeatModal(${JSON.stringify(m).replace(/"/g,"'")})">Comprar</button>
+          ${panel ? `<button class="btn-sm btn-sm-outline" onclick="showModal('modalAgregarPelicula')">Editar</button>` : `<button class="btn-sm btn-sm-outline" onclick="openSeatModal(${JSON.stringify(m).replace(/"/g,"'")})">Asientos</button>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPanelMovies() { renderMoviesGrid('panelMovies', peliculasData); }
+
+function renderDulceria() {
+  const grid = document.getElementById('dulceria-grid');
+  if (!grid) return;
+  grid.innerHTML = comidaData.map((s, i) => `
+    <div class="dulce-card">
+      <div class="dulce-img-box"><div class="dulce-img-label">${s.nombre.toUpperCase()}</div></div>
+      <div class="dulce-info">
+        <div class="dulce-name">${s.nombre}</div>
+        <div class="dulce-desc">Disponible en todas nuestras sucursales.</div>
+        <div class="dulce-footer">
+          <div class="dulce-price">$${parseFloat(s.precio).toFixed(2)}</div>
+          <button class="add-btn" onclick="addSnack(${i})">+</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderPromos() {
+  const grid = document.getElementById('promos-grid');
+  if (!grid) return;
+  grid.innerHTML = promos.map(p => `
+    <div class="promo-card"><div class="promo-accent"></div>
+      <span class="promo-tag ${p.tagClass}">${p.tag}</span>
+      <div class="promo-title">${p.title}</div>
+      <div class="promo-desc">${p.desc}</div>
+      <div class="promo-code-row">
+        <span class="promo-code-val">${p.code}</span>
+        <button class="copy-btn" onclick="copyCode('${p.code}')">Copiar</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderLocations() {
+  const content = document.getElementById('locations-content');
+  if (!content) return;
+  content.innerHTML = locations.map(l => `
+    <div class="country-section">
+      <div class="country-header">
+        <span style="font-size:0.9rem;font-weight:700;color:var(--pink-soft);border:1px solid rgba(215,93,70,0.3);padding:0.2rem 0.5rem;border-radius:5px;letter-spacing:1px;">${l.flag}</span>
+        <span class="country-name">${l.country}</span>
+        <span class="country-count">${l.branches.length} sucursal${l.branches.length>1?'es':''}</span>
+      </div>
+      <div class="branches-grid">
+        ${l.branches.map(b=>`
+          <div class="branch-card">
+            <div class="branch-header"><div class="branch-city">${b.city}</div><div class="branch-salas">${b.salas} salas disponibles</div></div>
+            <div class="branch-body">
+              <div class="branch-detail"><span class="branch-detail-label">Direccion</span><span>${b.address}</span></div>
+              <div class="branch-detail"><span class="branch-detail-label">Telefono</span><span>${b.phone}</span></div>
+              <div class="branch-detail"><span class="branch-detail-label">Horario</span><span>${b.hours}</span></div>
+            </div>
+            <div class="branch-actions">
+              <button class="btn-sm btn-sm-primary" onclick="showPage('cartelera')" style="flex:1;">Ver Cartelera</button>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function renderSalasTable() {
+  const tbody = document.getElementById('salasTable');
+  if (!tbody) return;
+  tbody.innerHTML = salasData.map(s => {
+    const pct = Math.round(s.ocupados/s.cap*100);
+    const st = pct>=100?'full':pct>=80?'almost':'available';
+    const label = {full:'Llena',almost:'Casi llena',available:'Disponible'};
+    const barColor = pct>=100?'#E11919':pct>=80?'#D75D46':'#4CAF7D';
+    return `<tr>
+      <td style="font-weight:700;">${s.name}</td><td>${s.tipo}</td><td>${s.cap}</td>
+      <td>${s.ocupados}</td>
+      <td><div style="display:flex;align-items:center;gap:0.6rem;">
+        <div class="progress-bar" style="width:80px;"><div class="progress-fill" style="width:${pct}%;background:${barColor};"></div></div>
+        <span class="hall-status hall-${st}">${label[st]}</span>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderMainFooter() {
+  const el = document.getElementById('mainFooter');
+  if (!el) return;
+  el.innerHTML = `<footer><div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:38px;height:38px;background:var(--red-logo);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fff;font-family:'Playfair Display',serif;">M</div>
+          <span style="font-size:1rem;font-weight:800;letter-spacing:2.5px;">MOVIORA <span style="color:var(--coral-light);">CINES</span></span>
+        </div>
+        <p>La experiencia cinematografica mas premium del mundo. Presentes en 12 paises con mas de 25 sucursales.</p>
+        <p style="margin-top:0.5rem;font-size:0.72rem;color:var(--coral-light);">Conectado a Supabase • info@moviora.com • (809) 555-0100</p>
+      </div>
+      <div class="footer-col"><h4>Navegar</h4>
+        <a onclick="showPage('cartelera')">Cartelera</a>
+        <a onclick="showPage('dulceria')">Dulceria</a>
+        <a onclick="showPage('promociones')">Promociones</a>
+        <a onclick="showPage('locations')">Locations</a>
+      </div>
+      <div class="footer-col"><h4>Mi Cuenta</h4>
+        <a onclick="showPage('login')">Iniciar Sesion</a>
+        <a onclick="showPage('registro')">Registrarse</a>
+        <a onclick="showPage('compras')">Mis Compras</a>
+        <a onclick="showPage('carrito')">Carrito</a>
+      </div>
+      <div class="footer-col"><h4>Sistema</h4>
+        <a onclick="showPage('login');switchLoginTab('empleado',document.querySelector('.tab-btn:last-child'))">Panel Empleados</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">2025 MOVIORA CINES. Todos los derechos reservados. Powered by Supabase.</span>
+      <div class="footer-social"><div class="social-icon">FB</div><div class="social-icon">IG</div><div class="social-icon">TW</div><div class="social-icon">YT</div></div>
+    </div>
+  </div></footer>`;
+}
+
+// ==================== NAV & PAGES ====================
+function showPage(page, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (!target) return;
+  target.classList.add('active');
+  if (navEl) { document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active')); navEl.classList.add('active'); }
+  window.scrollTo(0, 0);
+  if (page === 'cartelera') renderMoviesGrid('cartelera-grid', peliculasData);
+  if (page === 'dulceria') renderDulceria();
+  if (page === 'locations') renderLocations();
+  if (page === 'promociones') renderPromos();
+  if (page === 'compras') cargarMisCompras();
+  if (page === 'carrito') updateCartDisplay();
+  if (page === 'pago') renderPaySummary();
+  if (page === 'panel') { if (currentUser && currentUser.type === 'empleado') cargarDashboard(); else { showPage('login'); switchLoginTab('empleado', document.querySelectorAll('.tab-btn')[1]); } }
+}
+
+function filterMovies(genre, el) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); el.classList.add('active');
+  const filtered = genre === 'all' ? peliculasData : peliculasData.filter(m => m.genero.toLowerCase().includes(genre.toLowerCase()));
+  renderMoviesGrid('cartelera-grid', filtered);
+}
+
+// ==================== CARRITO ====================
+function openSeatModal(movie) {
+  if (typeof movie === 'string') movie = JSON.parse(movie.replace(/'/g,'"'));
+  currentMovieForSeats = movie;
+  document.getElementById('seatModalTitle').textContent = 'Asientos - ' + movie.nombre;
+  // Precio base segun sala
+  const precios = {'Sala 1-IMAX':14,'Sala 3-4DX':16,'Sala 2':12,'Sala 4':10,'Sala 5':10};
+  const precio = precios[movie.sala] || 12;
+  currentMovieForSeats._precio = precio;
+  document.getElementById('seatPrice').textContent = '$' + precio.toFixed(2);
+  selectedSeats = [];
+  document.getElementById('selectedSeatsLabel').textContent = 'Ninguno';
+  generateSeatMap();
+  showModal('modal-seats');
+}
+
+function generateSeatMap() {
+  const rows = ['A','B','C','D','E','F','G','H'];
+  const taken = new Set(['A2','A5','B3','B4','C1','C7','D5','D6','E3','E8','F2','F9','G4','H1','H6']);
+  let html = '';
+  rows.forEach(r => {
+    html += `<div class="seat-row"><span class="row-label">${r}</span>`;
+    for (let c = 1; c <= 10; c++) {
+      const id = r+c, t = taken.has(id);
+      html += `<div class="seat${t?' taken':''}" id="seat-${id}" ${t?'':` onclick="toggleSeat('${id}')"`} title="${id}"></div>`;
+      if (c === 5) html += `<div class="seat-gap"></div>`;
+    }
+    html += '</div>';
+  });
+  document.getElementById('seatMap').innerHTML = html;
+}
+
+function toggleSeat(id) {
+  const el = document.getElementById('seat-'+id);
+  if (!el || el.classList.contains('taken')) return;
+  if (el.classList.contains('selected')) { el.classList.remove('selected'); selectedSeats = selectedSeats.filter(s=>s!==id); }
+  else { el.classList.add('selected'); selectedSeats.push(id); }
+  document.getElementById('selectedSeatsLabel').textContent = selectedSeats.length ? selectedSeats.join(', ') : 'Ninguno';
+}
+
+function addToCart() {
+  if (!selectedSeats.length) { showNotif('Selecciona al menos un asiento'); return; }
+  if (!currentUser) { closeModal('modal-seats'); showPage('login'); showNotif('Inicia sesion para comprar'); return; }
+  const precio = currentMovieForSeats._precio || 12;
+  cartItems.push({ type:'ticket', title:currentMovieForSeats.nombre, seats:selectedSeats.join(', '), price:precio*selectedSeats.length, qty:selectedSeats.length });
+  updateCartBadge(); closeModal('modal-seats'); showNotif(selectedSeats.length + ' asiento(s) agregado(s) al carrito');
+}
+
+function addSnack(i) {
+  if (!currentUser) { showPage('login'); showNotif('Inicia sesion para agregar al carrito'); return; }
+  const item = comidaData[i];
+  const existing = cartItems.find(x => x.type==='snack' && x.title===item.nombre);
+  if (existing) existing.qty = (existing.qty||1)+1;
+  else cartItems.push({ type:'snack', title:item.nombre, price:parseFloat(item.precio), qty:1 });
+  updateCartBadge(); showNotif(item.nombre + ' agregado al carrito');
+}
+
+function updateCartBadge() {
+  const b = document.getElementById('cartBadge');
+  b.style.display = cartItems.length ? 'flex' : 'none';
+  b.textContent = cartItems.length;
+}
+
+function updateCartDisplay() {
+  const container = document.getElementById('cart-items-container');
+  if (!container) return;
+  if (!cartItems.length) {
+    container.innerHTML = '<div style="padding:3rem;text-align:center;color:var(--text-muted);"><div style="font-size:0.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem;color:rgba(215,93,70,0.4);">CARRITO VACIO</div><p>No tienes items en tu carrito</p><button class="btn-full" style="max-width:200px;margin:1.2rem auto 0;" onclick="showPage(\'cartelera\')">Ver Cartelera</button></div>';
+    updateCartTotals(0, 0); return;
+  }
+  let ticketsTotal = 0, snacksTotal = 0;
+  const html = cartItems.map((item, i) => {
+    if (item.type === 'ticket') ticketsTotal += item.price; else snacksTotal += item.price;
+    return `<div class="cart-item">
+      <div class="cart-item-poster">${item.type==='ticket'?item.title.substring(0,10).toUpperCase():'SNACK'}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-title">${item.title}</div>
+        <div class="cart-item-sub">${item.type==='ticket'?'Asientos: '+item.seats:'Dulceria x'+(item.qty||1)}</div>
+        <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+      </div>
+      <button class="remove-btn" onclick="removeCartItem(${i})">×</button>
+    </div>`;
+  }).join('');
+  container.innerHTML = html;
+  updateCartTotals(ticketsTotal, snacksTotal);
+}
+
+function removeCartItem(i) { cartItems.splice(i,1); updateCartBadge(); updateCartDisplay(); }
+
+function updateCartTotals(tickets, snacks) {
+  const total = tickets + snacks + 2;
+  document.getElementById('summaryTickets').textContent = '$'+tickets.toFixed(2);
+  document.getElementById('summarySnacks').textContent = '$'+snacks.toFixed(2);
+  document.getElementById('cartTotal').textContent = '$'+total.toFixed(2);
+}
+
+function renderPaySummary() {
+  const items = document.getElementById('paySummaryItems');
+  const totalEl = document.getElementById('payTotalDisplay');
+  if (!items || !totalEl) return;
+  const total = cartItems.reduce((s,i)=>s+i.price,0)+2;
+  items.innerHTML = cartItems.map(i=>`<div class="summary-row"><span>${i.title}</span><span>$${i.price.toFixed(2)}</span></div>`).join('') + '<div class="summary-row"><span>Cargo de servicio</span><span>$2.00</span></div>';
+  totalEl.textContent = '$'+total.toFixed(2);
+}
+
+function irAlPago() {
+  if (!currentUser) { showNotif('Inicia sesion para pagar'); showPage('login'); return; }
+  if (!cartItems.length) { showNotif('El carrito esta vacio'); return; }
+  showPage('pago');
+}
+
+function setPayMethod(m, el) {
+  currentPayMethod = m;
+  document.querySelectorAll('.pay-method').forEach(x=>x.classList.remove('active')); el.classList.add('active');
+  document.getElementById('payFormCard').style.display = m==='transferencia'?'none':'';
+  document.getElementById('payFormTransfer').style.display = m==='transferencia'?'':'none';
+}
+
+// ==================== SPOTY AI ====================
+function toggleSpoty() { spotyOpen = !spotyOpen; document.getElementById('spotyPanel').classList.toggle('open', spotyOpen); }
+
+async function sendSpoty() {
+  const inp = document.getElementById('spotyInput');
+  const msg = inp.value.trim(); if (!msg) return;
+  inp.value = '';
+  const msgs = document.getElementById('spotyMessages');
+  msgs.innerHTML += `<div class="spoty-msg user">${msg}</div>`;
+  document.getElementById('spotyChips').style.display = 'none';
+  // Typing indicator
+  const typingId = 'typing-' + Date.now();
+  msgs.innerHTML += `<div class="spoty-typing" id="${typingId}"><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+  
+  // Llamar a Claude API via Supabase
+  const pelInfo = peliculasData.map(p=>`${p.nombre} (${p.genero}, ${p.sala})`).join(', ');
+  const comInfo = comidaData.slice(0,6).map(c=>`${c.nombre} $${parseFloat(c.precio).toFixed(2)}`).join(', ');
+  const systemPrompt = `Eres Spoty, el asistente virtual de MOVIORA CINES. La cartelera actual desde Supabase incluye: ${pelInfo}. Productos de dulceria: ${comInfo}. Tenemos sucursales en RD, Puerto Rico, UK, Corea del Sur, India, Dubai, Sudafrica y Haiti. Responde en espanol, de forma amable y breve, sin emojis.`;
+  
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:300, system:systemPrompt, messages:[{role:'user',content:msg}] })
+    });
+    const data = await res.json();
+    document.getElementById(typingId)?.remove();
+    const reply = data.content?.[0]?.text || 'Lo siento, no pude responder en este momento.';
+    msgs.innerHTML += `<div class="spoty-msg bot">${reply}</div>`;
+  } catch(e) {
+    document.getElementById(typingId)?.remove();
+    const ml = msg.toLowerCase(); let r = 'Puedo ayudarte con informacion sobre la cartelera, dulceria, sucursales y promociones de MOVIORA CINES.';
+    if(ml.includes('cartelera')||ml.includes('peliculas'))r=`Tenemos estas peliculas: ${peliculasData.slice(0,4).map(p=>p.nombre).join(', ')} y mas. Todas disponibles para reservar.`;
+    else if(ml.includes('dulceria')||ml.includes('comida'))r=`En dulceria tenemos: ${comidaData.slice(0,5).map(c=>c.nombre+' $'+parseFloat(c.precio).toFixed(2)).join(', ')}.`;
+    else if(ml.includes('sucursal')||ml.includes('donde'))r='Estamos en Rep. Dominicana (7 sucursales), Puerto Rico, UK, Corea del Sur, India, Dubai, Sudafrica y Haiti. Mas de 25 ubicaciones.';
+    else if(ml.includes('promo'))r='Tenemos 6 promociones activas: Martes 2x1, Combo Pareja $29.99, Club Premium 20% off, Verano 3D, Domingos Familia y Descuento Universitario 30%.';
+    msgs.innerHTML += `<div class="spoty-msg bot">${r}</div>`;
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function spotyQuick(msg) { document.getElementById('spotyInput').value = msg; sendSpoty(); }
+
+// ==================== UTILS ====================
+function showPage_cartelera_filter(g, el) { filterMovies(g, el); }
+function switchLoginTab(tab, el) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); if(el)el.classList.add('active');
+  document.getElementById('loginCliente').style.display = tab==='cliente' ? '' : 'none';
+  document.getElementById('loginEmpleado').style.display = tab==='empleado' ? '' : 'none';
+}
+function empSection(s, el) {
+  document.querySelectorAll('[id^="panel-"]').forEach(p=>p.style.display='none');
+  const t = document.getElementById('panel-'+s); if(t) t.style.display='';
+  if(el){document.querySelectorAll('.emp-nav-item').forEach(i=>i.classList.remove('active')); el.classList.add('active');}
+  if(s==='funciones') cargarFunciones();
+  if(s==='ventas') cargarVentasPanel();
+  if(s==='estadisticas') cargarEstadSalas();
+}
+function copyCode(c) { navigator.clipboard?.writeText(c).catch(()=>{}); showNotif('Codigo '+c+' copiado!'); }
+function showModal(id) { document.getElementById(id).style.display='flex'; }
+function closeModal(id) { document.getElementById(id).style.display='none'; }
+function showNotif(msg) {
+  const el = document.createElement('div'); el.className='notification';
+  el.innerHTML=`<div class="notif-text">${msg}</div>`;
+  document.body.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity 0.4s';},2600);
+  setTimeout(()=>el.remove(),3000);
+}
+function generateBarcode() {
+  let h=''; for(let i=0;i<42;i++){const w=Math.random()>0.72?'wide':'';h+=`<div class="barcode-line ${w}" style="height:${28+Math.random()*18}px;opacity:${0.55+Math.random()*0.45};"></div>`;}
+  const el = document.getElementById('barcodeLines'); if(el) el.innerHTML=h;
+}
+function formatCard(el){let v=el.value.replace(/\D/g,'').substring(0,16);el.value=v.replace(/(.{4})/g,'$1 ').trim();}
+function formatExpiry(el){let v=el.value.replace(/\D/g,'');if(v.length>2)v=v.substring(0,2)+'/'+v.substring(2,4);el.value=v;}
+</script>
+</body>
+</html>
+          
